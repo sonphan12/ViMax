@@ -1,11 +1,16 @@
 package com.sonphan12.vimax.ui;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -16,6 +21,7 @@ import android.view.MenuItem;
 import com.sonphan12.vimax.R;
 import com.sonphan12.vimax.ui.folderlist.FolderFragment;
 import com.sonphan12.vimax.ui.videolist.VideoFragment;
+import com.sonphan12.vimax.utils.AppConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +30,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
-    @BindView(R.id.searchVideo) SearchView searchVideo;
-    @BindView(R.id.mainTab) TabLayout mainTab;
-    @BindView(R.id.mainPager) ViewPager mainPager;
-    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.searchVideo)
+    SearchView searchVideo;
+    @BindView(R.id.mainTab)
+    TabLayout mainTab;
+    @BindView(R.id.mainPager)
+    ViewPager mainPager;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

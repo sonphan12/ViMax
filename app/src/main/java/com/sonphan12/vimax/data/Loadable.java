@@ -7,5 +7,5 @@ import java.util.List;
 import io.reactivex.Observable;
 
 public interface Loadable<T> {
-    List<T> load(Context ctx);
+    Observable<List<T>> load(Context ctx);
 }

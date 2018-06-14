@@ -9,16 +9,8 @@ import com.sonphan12.vimax.R;
 import java.io.File;
 
 public class Video {
-    private Bitmap imgThumbnail;
     private String name;
 
-    public Bitmap getImgThumbnail() {
-        return imgThumbnail;
-    }
-
-    public void setImgThumbnail(Bitmap imgThumbnail) {
-        this.imgThumbnail = imgThumbnail;
-    }
 
     public String getFileSrc() {
         return fileSrc;
@@ -35,9 +27,6 @@ public class Video {
         this.fileSrc = fileSrc;
         this.name = name;
         this.duration = duration;
-        this.imgThumbnail = ThumbnailUtils.createVideoThumbnail(fileSrc,
-                MediaStore.Images.Thumbnails.MINI_KIND);
-
     }
     public Video() {
 

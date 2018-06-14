@@ -44,7 +44,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
     @Override
     public void onBindViewHolder(@NonNull VideoViewHolder holder, int position) {
         Video video = listVideo.get(position);
-        Glide.with(ctx).load(video.getImgThumbnail()).apply(new RequestOptions().centerCrop()).into(holder.imgVideoImage);
+        Glide.with(ctx).load(video.getFileSrc()).apply(new RequestOptions().centerCrop()).into(holder.imgVideoImage);
         holder.txtVideoName.setText(video.getName());
         holder.txtDuration.setText(video.getDuration());
     }

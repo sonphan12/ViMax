@@ -55,12 +55,7 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
         lvVideos.setAdapter(videoAdapter);
 
         presenter = new VideoPresenter(this);
-        presenter.getVideos(getContext())
-                .compose(ApplyScheduler.applySchedulers())
-                .subscribe(list -> {
-                    hideProgressCircle();
-                    showVideos(list);
-                }, e -> showToastMessage(e.toString(), Toast.LENGTH_SHORT));
+        presenter.getVideos(getContext());
 
         // Inflate the layout for this fragment
         return v;

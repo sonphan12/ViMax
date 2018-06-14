@@ -18,6 +18,6 @@ public interface VideoContract {
     }
 
     interface Presenter extends BasePresenter<View> {
-        Observable<List<Video>> getVideos(Context ctx);
+        void getVideos(Context ctx);
     }
 }
