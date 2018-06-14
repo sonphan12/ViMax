@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/text_margin"
-    tools:context=".ui.tabfragments.FolderFragment">
+    tools:context=".ui.folderlist.FolderFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

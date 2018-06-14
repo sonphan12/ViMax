@@ -14,7 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.sonphan12.vimax.R;
-import com.sonphan12.vimax.ui.tabfragments.FolderFragment;
+import com.sonphan12.vimax.ui.folderlist.FolderFragment;
 import com.sonphan12.vimax.ui.videolist.VideoFragment;
 
 import java.util.ArrayList;

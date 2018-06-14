@@ -1,4 +1,4 @@
-package com.sonphan12.vimax.ui.tabfragments;
+package com.sonphan12.vimax.ui.folderlist;
 
 
 import android.os.Bundle;
