@@ -30,6 +30,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
     }
     public VideoAdapter(Context ctx) {
         this.ctx = ctx;
+        this.listVideo = new ArrayList<>();
     }
 
     @NonNull

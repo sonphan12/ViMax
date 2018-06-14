@@ -7,6 +7,8 @@ import com.sonphan12.vimax.data.model.Video;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+
 public class VideoPresenter implements VideoContract.Presenter {
     private VideoContract.View view;
     private OfflineVideoRepository offlineVideoRepository;
@@ -18,8 +20,8 @@ public class VideoPresenter implements VideoContract.Presenter {
 
 
     @Override
-    public List<Video> getVideos(Context ctx) {
-        return offlineVideoRepository.load(ctx);
+    public Observable<List<Video>> getVideos(Context ctx) {
+        return Observable.create(emitter -> emitter.onNext(offlineVideoRepository.load(ctx)));
     }
 
 
