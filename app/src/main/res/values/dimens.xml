@@ -1,0 +1,10 @@
+<resources>
+    <dimen name="app_bar_height">100dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="card_radius">4dp</dimen>
+    <dimen name="image_folder_width">150dp</dimen>
+    <dimen name="image_folder_height">90dp</dimen>
+    <dimen name="text_padding">10dp</dimen>
+    <dimen name="card_space">15dp</dimen>
+</resources>
