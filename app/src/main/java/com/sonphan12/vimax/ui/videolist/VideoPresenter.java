@@ -4,12 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.sonphan12.vimax.data.OfflineVideoRepository;
-import com.sonphan12.vimax.data.model.Video;
 import com.sonphan12.vimax.utils.ApplyScheduler;
-
-import java.util.List;
-
-import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class VideoPresenter implements VideoContract.Presenter {
