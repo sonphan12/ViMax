@@ -67,4 +67,10 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
     public void hideProgressCircle() {
         loadingProgress.setVisibility(View.GONE);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.destroy();
+    }
 }

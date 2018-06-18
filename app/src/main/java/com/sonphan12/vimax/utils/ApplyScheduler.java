@@ -6,6 +6,8 @@ import io.reactivex.schedulers.Schedulers;
 
 public abstract class ApplyScheduler {
     public static <T> ObservableTransformer<T, T> applySchedulers() {
-            return observable -> observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+            return observable -> observable
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread());
     }
 }

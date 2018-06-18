@@ -76,4 +76,10 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
     public void hideProgressCircle() {
         loadingProgress.setVisibility(View.GONE);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.destroy();
+    }
 }
