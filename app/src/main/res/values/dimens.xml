@@ -8,4 +8,5 @@
     <dimen name="text_padding">10dp</dimen>
     <dimen name="card_space">15dp</dimen>
     <dimen name="toolbar_height">50dp</dimen>
+    <dimen name="video_view_height">250dp</dimen>
 </resources>
