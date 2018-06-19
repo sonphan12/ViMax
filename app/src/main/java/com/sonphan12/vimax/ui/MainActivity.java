@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.sonphan12.vimax.DummyFragment;
 import com.sonphan12.vimax.R;
 import com.sonphan12.vimax.ui.albumlist.AlbumFragment;
 import com.sonphan12.vimax.ui.videolist.VideoFragment;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpPager(ViewPager mainPager) {
         MainPagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new AlbumFragment(), "Album");
+        adapter.addFragment(new DummyFragment(), "Album");
         adapter.addFragment(new VideoFragment(), "Video");
         mainPager.setAdapter(adapter);
     }

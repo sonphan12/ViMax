@@ -21,7 +21,7 @@ public class AlbumPresenter implements AlbumContract.Presenter {
 
     @Override
     public void getAlbums(Context ctx) {
-        disposable.add(offlineVideoAlbumRepository.load(ctx)
+        disposable.add(offlineVideoAlbumRepository.loadAll(ctx)
                 .compose(ApplyScheduler.applySchedulers())
                 .subscribe(albums -> {
                     view.hideProgressCircle();

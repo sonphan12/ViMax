@@ -12,9 +12,8 @@ import java.util.List;
 
 import io.reactivex.Observable;
 
-public class OfflineVideoAlbumRepository implements Loadable<Album> {
-    @Override
-    public Observable<List<Album>> load(Context ctx) {
+public class OfflineVideoAlbumRepository{
+    public Observable<List<Album>> loadAll(Context ctx) {
         return Observable.create(emitter -> {
             ArrayList<Album> listAlbum = new ArrayList<>();
             Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
@@ -33,5 +32,6 @@ public class OfflineVideoAlbumRepository implements Loadable<Album> {
             emitter.onNext(listAlbum);
             emitter.onComplete();
         });
+
     }
 }
