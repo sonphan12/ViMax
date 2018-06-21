@@ -8,15 +8,14 @@ import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 
 public class ViMaxApplication extends Application {
+    FFmpeg ffmpeg;
     @Override
     public void onCreate() {
         super.onCreate();
-
-        loadFfmepgBinary();
     }
 
-    private void loadFfmepgBinary() {
-        FFmpeg ffmpeg = FFmpeg.getInstance(getApplicationContext());
+    private void loadFfmpegBinary() {
+        ffmpeg = FFmpeg.getInstance(getApplicationContext());
         try {
             ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
 
@@ -39,5 +38,9 @@ public class ViMaxApplication extends Application {
             // Handle if FFmpeg is not supported by device
             Toast.makeText(getApplicationContext(), "FFmpeg not supported", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public FFmpeg getFfmpegInstance() {
+        return this.ffmpeg;
     }
 }

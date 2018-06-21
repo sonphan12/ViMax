@@ -2,11 +2,10 @@ package com.sonphan12.vimax.ui.videoedit;
 
 public interface VideoEditContract {
     interface View {
-        void showVideoPreview(String videoPath);
-        void finishActivity();
+        void showVideoPreview();
     }
 
     interface Presenter {
-        void showVideoPreview(String videoPath);
+        void showVideoPreview();
     }
 }

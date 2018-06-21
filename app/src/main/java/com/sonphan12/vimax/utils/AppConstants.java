@@ -1,7 +1,14 @@
 package com.sonphan12.vimax.utils;
 
+import android.Manifest;
+
+import java.util.ArrayList;
+
 public interface AppConstants {
-    int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE = 1209;
+    int PERMISSION_REQUEST_ALL = 1000;
+    String[] PERMISSIONS =
+            {Manifest.permission.READ_EXTERNAL_STORAGE
+            , Manifest.permission.WRITE_EXTERNAL_STORAGE};
     String EXTRA_VIDEO_PATH = "VIDEO_PATH";
     String EXTRA_ALBUM_NAME = "ALBUM_NAME";
 }
