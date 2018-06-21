@@ -53,6 +53,12 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        presenter.getAlbums(getContext());
+    }
+
+    @Override
     public void showAlbums(List<Album> listAlbum) {
         albumAdapter.setListAlbum(listAlbum);
         albumAdapter.notifyDataSetChanged();

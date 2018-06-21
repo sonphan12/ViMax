@@ -12,6 +12,7 @@ public class ViMaxApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        loadFfmpegBinary();
     }
 
     private void loadFfmpegBinary() {

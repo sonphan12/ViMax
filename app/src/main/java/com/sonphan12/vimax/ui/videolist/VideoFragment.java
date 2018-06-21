@@ -62,6 +62,12 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        presenter.getVideos(getContext());
+    }
+
+    @Override
     public void showVideos(List<Video> listVideo) {
         videoAdapter.setListVideo(listVideo);
         videoAdapter.notifyDataSetChanged();
