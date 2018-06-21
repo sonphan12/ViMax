@@ -12,10 +12,10 @@ import com.sonphan12.vimax.utils.AppConstants;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class VideoEditActivity extends AppCompatActivity {
+public class VideoEditActivity extends AppCompatActivity implements VideoEditContract.View {
     @BindView(R.id.videoView) VideoView videoView;
     MediaController mediaController;
-    String videoPath;
+    VideoEditContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,14 +23,16 @@ public class VideoEditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_video_edit);
 
         ButterKnife.bind(this);
+        presenter = new VideoEditPresenter(this);
+        String videoPath = "";
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) videoPath = extras.getString(AppConstants.EXTRA_VIDEO_PATH, "");
+        presenter.showVideoPreview(videoPath);
 
-        Intent intent = getIntent();
-        if (intent == null) {
-            finish();
-        } else {
-            videoPath = intent.getStringExtra(AppConstants.EXTRA_VIDEO_PATH);
-        }
+    }
 
+    @Override
+    public void showVideoPreview(String videoPath) {
         if (mediaController == null) {
             mediaController = new MediaController(this);
             mediaController.setAnchorView(videoView);
@@ -45,5 +47,10 @@ public class VideoEditActivity extends AppCompatActivity {
         }
 
         videoView.requestFocus();
+    }
+
+    @Override
+    public void finishActivity() {
+        finish();
     }
 }
