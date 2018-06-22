@@ -8,16 +8,21 @@ import android.widget.Toast;
 import com.sonphan12.vimax.data.OfflineVideoRepository;
 import com.sonphan12.vimax.utils.AppConstants;
 import com.sonphan12.vimax.utils.ApplyScheduler;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import io.reactivex.disposables.CompositeDisposable;
 
 public class VideoPresenter implements VideoContract.Presenter {
     private VideoContract.View view;
     private OfflineVideoRepository offlineVideoRepository;
-    CompositeDisposable disposable = new CompositeDisposable();
+    private CompositeDisposable disposable;
 
-    public VideoPresenter(VideoContract.View view) {
-        this.view = view;
-        this.offlineVideoRepository = new OfflineVideoRepository();
+    public VideoPresenter(OfflineVideoRepository offlineVideoRepository
+            , CompositeDisposable compositeDisposable) {
+        this.offlineVideoRepository = offlineVideoRepository;
+        this.disposable = compositeDisposable;
     }
 
 

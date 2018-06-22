@@ -6,17 +6,32 @@ import android.widget.Toast;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
+import com.sonphan12.vimax.di.application.ApplicationComponent;
+import com.sonphan12.vimax.di.application.ApplicationModule;
+import com.sonphan12.vimax.di.FfmpegModule;
+import com.sonphan12.vimax.di.application.DaggerApplicationComponent;
+
+import javax.inject.Inject;
 
 public class ViMaxApplication extends Application {
+    @Inject
     FFmpeg ffmpeg;
     @Override
     public void onCreate() {
         super.onCreate();
+        inject();
         loadFfmpegBinary();
     }
 
+    private void inject() {
+        ApplicationComponent component = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(this))
+                .ffmpegModule(new FfmpegModule())
+                .build();
+        component.inject(this);
+    }
+
     private void loadFfmpegBinary() {
-        ffmpeg = FFmpeg.getInstance(getApplicationContext());
         try {
             ffmpeg.loadBinary(new LoadBinaryResponseHandler() {
 
