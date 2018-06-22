@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.sonphan12.vimax.data.OfflineVideoAlbumRepository;
+import com.sonphan12.vimax.data.OfflineVideoRepository;
 import com.sonphan12.vimax.utils.ApplyScheduler;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -12,11 +13,12 @@ import io.reactivex.disposables.CompositeDisposable;
 public class AlbumPresenter implements AlbumContract.Presenter {
     AlbumContract.View view;
     OfflineVideoAlbumRepository offlineVideoAlbumRepository;
-    CompositeDisposable disposable = new CompositeDisposable();
+    CompositeDisposable disposable;
 
-    public AlbumPresenter(AlbumContract.View view) {
-        this.view = view;
-        this.offlineVideoAlbumRepository = new OfflineVideoAlbumRepository();
+    public AlbumPresenter(OfflineVideoAlbumRepository offlineVideoAlbumRepository,
+                          CompositeDisposable disposable) {
+        this.offlineVideoAlbumRepository = offlineVideoAlbumRepository;
+        this.disposable = disposable;
     }
 
     @Override

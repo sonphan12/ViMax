@@ -11,4 +11,6 @@ public interface AppConstants {
             , Manifest.permission.WRITE_EXTERNAL_STORAGE};
     String EXTRA_VIDEO_PATH = "VIDEO_PATH";
     String EXTRA_ALBUM_NAME = "ALBUM_NAME";
+    String FOLDER_NAME = "ViMax";
+    String ROTATE_PROGRESS_MESSAGE = "Rotating video, please wait...";
 }

@@ -12,9 +12,15 @@ import android.widget.ProgressBar;
 
 import com.sonphan12.vimax.R;
 import com.sonphan12.vimax.data.model.Album;
+import com.sonphan12.vimax.di.application.ApplicationModule;
+import com.sonphan12.vimax.di.albumlist.AlbumListComponent;
+import com.sonphan12.vimax.di.albumlist.AlbumListModule;
+import com.sonphan12.vimax.di.albumlist.DaggerAlbumListComponent;
 import com.sonphan12.vimax.ui.base.BaseFragment;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,9 +32,12 @@ import butterknife.ButterKnife;
 public class AlbumFragment extends BaseFragment implements AlbumContract.View {
     @BindView(R.id.loadingProgress) ProgressBar loadingProgress;
     @BindView(R.id.lvAlbums) RecyclerView lvAlbums;
-
+    @Inject
     AlbumAdapter albumAdapter;
-    AlbumPresenter presenter;
+    @Inject
+    AlbumContract.Presenter presenter;
+    @Inject
+    LinearLayoutManager layoutManager;
 
     public AlbumFragment() {
         // Required empty public constructor
@@ -39,17 +48,31 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_album, container, false);
+
+        inject();
+
         ButterKnife.bind(this, v);
-        albumAdapter = new AlbumAdapter(getContext());
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         lvAlbums.setLayoutManager(layoutManager);
         lvAlbums.setAdapter(albumAdapter);
 
-        presenter = new AlbumPresenter(this);
+        presenter.setView(this);
         presenter.getAlbums(getContext());
 
-        // Inflate the layout for this fragment
         return v;
+    }
+
+    private void inject() {
+        AlbumListComponent component = DaggerAlbumListComponent.builder()
+                .applicationModule(new ApplicationModule(getContext()))
+                .albumListModule(new AlbumListModule())
+                .build();
+        component.inject(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.getAlbums(getContext());
     }
 
     @Override

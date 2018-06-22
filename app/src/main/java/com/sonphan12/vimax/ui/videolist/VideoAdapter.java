@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.sonphan12.vimax.R;
 import com.sonphan12.vimax.data.model.Video;
@@ -22,6 +23,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -30,12 +34,10 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
     List<Video> listVideo;
     Context ctx;
 
-    public VideoAdapter() {
-        super();
-    }
+
     public VideoAdapter(Context ctx) {
         this.ctx = ctx;
-        this.listVideo = new ArrayList<>();
+        listVideo = new ArrayList<>();
     }
 
     @NonNull

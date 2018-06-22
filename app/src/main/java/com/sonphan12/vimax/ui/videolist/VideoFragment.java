@@ -10,20 +10,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.sonphan12.vimax.R;
 import com.sonphan12.vimax.data.model.Video;
+import com.sonphan12.vimax.di.application.ApplicationModule;
+import com.sonphan12.vimax.di.videolist.DaggerVideoListComponent;
+import com.sonphan12.vimax.di.videolist.VideoListComponent;
+import com.sonphan12.vimax.di.videolist.VideoListModule;
 import com.sonphan12.vimax.ui.base.BaseFragment;
-import com.sonphan12.vimax.utils.ApplyScheduler;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -32,8 +33,12 @@ import io.reactivex.schedulers.Schedulers;
 public class VideoFragment extends BaseFragment implements VideoContract.View {
     @BindView(R.id.loadingProgress) ProgressBar loadingProgress;
     @BindView(R.id.lvVideos) RecyclerView lvVideos;
+    @Inject
     VideoAdapter videoAdapter;
+    @Inject
     VideoContract.Presenter presenter;
+    @Inject
+    LinearLayoutManager layoutManager;
 
     public VideoFragment() {
         // Required empty public constructor
@@ -47,18 +52,32 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
 
         View v = inflater.inflate(R.layout.fragment_video, container, false);
 
+        inject();
+
         ButterKnife.bind(this, v);
 
-        videoAdapter = new VideoAdapter(getContext());
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         lvVideos.setLayoutManager(layoutManager);
         lvVideos.setAdapter(videoAdapter);
 
-        presenter = new VideoPresenter(this);
+        presenter.setView(this);
         presenter.getVideos(getContext());
 
         // Inflate the layout for this fragment
         return v;
+    }
+
+    private void inject() {
+        VideoListComponent component =
+                DaggerVideoListComponent.builder().applicationModule(new ApplicationModule(getContext()))
+                .videoListModule(new VideoListModule())
+                .build();
+        component.inject(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.getVideos(getContext());
     }
 
     @Override
