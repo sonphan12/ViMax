@@ -2,6 +2,7 @@ package com.sonphan12.vimax.ui.videolist;
 
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.sonphan12.vimax.R;
@@ -18,6 +22,8 @@ import com.sonphan12.vimax.di.videolist.DaggerVideoListComponent;
 import com.sonphan12.vimax.di.videolist.VideoListComponent;
 import com.sonphan12.vimax.di.videolist.VideoListModule;
 import com.sonphan12.vimax.ui.base.BaseFragment;
+import com.sonphan12.vimax.ui.videoedit.VideoEditActivity;
+import com.sonphan12.vimax.utils.AppConstants;
 
 import java.util.List;
 
@@ -30,10 +36,12 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VideoFragment extends BaseFragment implements VideoContract.View {
+public class VideoFragment extends BaseFragment implements VideoContract.View, VideoItemListener.OnVideoItemClick,VideoItemListener.OnVideoItemLongClick {
     @BindView(R.id.loadingProgress) ProgressBar loadingProgress;
     @BindView(R.id.lvVideos) RecyclerView lvVideos;
-    @Inject
+    @BindView(R.id.llHidden) LinearLayout llHidden;
+    @BindView(R.id.btnDelete) Button btnDelete;
+    @BindView(R.id.btnSelectAll) Button btnSelectAll;
     VideoAdapter videoAdapter;
     @Inject
     VideoContract.Presenter presenter;
@@ -55,6 +63,8 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
         inject();
 
         ButterKnife.bind(this, v);
+
+        videoAdapter = new VideoAdapter(getContext(),  this, this);
 
         lvVideos.setLayoutManager(layoutManager);
         lvVideos.setAdapter(videoAdapter);
@@ -101,4 +111,18 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
         super.onDestroyView();
         presenter.destroy();
     }
+
+    @Override
+    public void onVideoItemClick(View v, int position) {
+            Intent intent = new Intent(getContext(), VideoEditActivity.class);
+            intent.putExtra(AppConstants.EXTRA_VIDEO_PATH, videoAdapter.getListVideo().get(position).getFileSrc());
+            getContext().startActivity(intent);
+    }
+
+
+    @Override
+    public void onVideoItemLongClick(View v, int position) {
+
+    }
+
 }

@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,11 +34,17 @@ import butterknife.OnClick;
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHolder> {
     List<Video> listVideo;
     Context ctx;
+    VideoItemListener.OnVideoItemClick onVideoItemClickListener;
+    VideoItemListener.OnVideoItemLongClick onVideoItemLongClickListener;
+    boolean enableAllCheckbox;
 
-
-    public VideoAdapter(Context ctx) {
+    public VideoAdapter(Context ctx, VideoItemListener.OnVideoItemClick onVideoItemClickListener
+            , VideoItemListener.OnVideoItemLongClick onVideoItemLongClickListener) {
         this.ctx = ctx;
         listVideo = new ArrayList<>();
+        this.onVideoItemClickListener = onVideoItemClickListener;
+        this.onVideoItemLongClickListener = onVideoItemLongClickListener;
+        this.enableAllCheckbox = false;
     }
 
     @NonNull
@@ -55,11 +62,39 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
         holder.txtVideoName.setText(video.getName());
         holder.txtDuration.setText(video.getDuration());
 
+        if (this.enableAllCheckbox) {
+            holder.chkSelect.setVisibility(View.VISIBLE);
+        } else {
+            holder.chkSelect.setVisibility(View.INVISIBLE);
+        }
+
+        holder.chkSelect.setChecked(video.isChecked());
+
+//        holder.cardViewVideo.setOnClickListener(v -> {
+//            Intent intent = new Intent(ctx, VideoEditActivity.class);
+//            intent.putExtra(AppConstants.EXTRA_VIDEO_PATH, listVideo.get(position).getFileSrc());
+//            ctx.startActivity(intent);
+//        });
         holder.cardViewVideo.setOnClickListener(v -> {
-            Intent intent = new Intent(ctx, VideoEditActivity.class);
-            intent.putExtra(AppConstants.EXTRA_VIDEO_PATH, listVideo.get(position).getFileSrc());
-            ctx.startActivity(intent);
+            if (onVideoItemClickListener != null) {
+                onVideoItemClickListener.onVideoItemClick(v, listVideo.indexOf(video));
+            }
         });
+
+        holder.cardViewVideo.setOnLongClickListener(v -> {
+            if (onVideoItemLongClickListener != null) {
+                onVideoItemLongClickListener.onVideoItemLongClick(v, listVideo.indexOf(video));
+            }
+            return false;
+        });
+
+//        holder.cardViewVideo.setOnLongClickListener(v -> {
+//            visibleAllItem();
+//            uncheckAllItem();
+//            holder.chkSelect.setChecked(true);
+//            video.setChecked(true);
+//            notifyDataSetChanged();
+//        });
     }
 
     @Override
@@ -72,6 +107,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
         @BindView(R.id.txtVideoName) TextView txtVideoName;
         @BindView(R.id.txtDuration) TextView txtDuration;
         @BindView(R.id.cardViewVideo) CardView cardViewVideo;
+        @BindView(R.id.chkSelect) CheckBox chkSelect;
 
         VideoViewHolder(View itemView) {
             super(itemView);
@@ -81,5 +117,9 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
 
     public void setListVideo(List<Video> listVideo) {
         this.listVideo = new ArrayList<>(listVideo);
+    }
+
+    public List<Video> getListVideo() {
+        return listVideo;
     }
 }

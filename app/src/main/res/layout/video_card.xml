@@ -25,6 +25,13 @@
                 android:layout_width="@dimen/image_folder_width"
                 android:layout_height="@dimen/image_folder_height" />
 
+            <CheckBox
+                android:id="@+id/chkSelect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:layout_alignParentEnd="true"/>
+
             <TextView
                 android:id="@+id/txtVideoName"
                 android:layout_width="match_parent"
@@ -32,7 +39,10 @@
                 android:paddingLeft="@dimen/text_padding"
                 android:paddingRight="@dimen/text_padding"
                 android:text="@string/text_holder"
-                android:layout_toEndOf="@id/imgVideoImage"/>
+                android:singleLine="true"
+                android:layout_toEndOf="@id/imgVideoImage"
+                android:layout_below="@id/chkSelect"/>
+
             <TextView
                 android:id="@+id/txtDuration"
                 android:layout_width="match_parent"
