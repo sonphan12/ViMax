@@ -34,16 +34,11 @@ import butterknife.OnClick;
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHolder> {
     List<Video> listVideo;
     Context ctx;
-    VideoItemListener.OnVideoItemClick onVideoItemClickListener;
-    VideoItemListener.OnVideoItemLongClick onVideoItemLongClickListener;
     boolean enableAllCheckbox;
 
-    public VideoAdapter(Context ctx, VideoItemListener.OnVideoItemClick onVideoItemClickListener
-            , VideoItemListener.OnVideoItemLongClick onVideoItemLongClickListener) {
+    public VideoAdapter(Context ctx) {
         this.ctx = ctx;
         listVideo = new ArrayList<>();
-        this.onVideoItemClickListener = onVideoItemClickListener;
-        this.onVideoItemLongClickListener = onVideoItemLongClickListener;
         this.enableAllCheckbox = false;
     }
 
@@ -75,18 +70,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
 //            intent.putExtra(AppConstants.EXTRA_VIDEO_PATH, listVideo.get(position).getFileSrc());
 //            ctx.startActivity(intent);
 //        });
-        holder.cardViewVideo.setOnClickListener(v -> {
-            if (onVideoItemClickListener != null) {
-                onVideoItemClickListener.onVideoItemClick(v, listVideo.indexOf(video));
-            }
-        });
-
-        holder.cardViewVideo.setOnLongClickListener(v -> {
-            if (onVideoItemLongClickListener != null) {
-                onVideoItemLongClickListener.onVideoItemLongClick(v, listVideo.indexOf(video));
-            }
-            return false;
-        });
 
 //        holder.cardViewVideo.setOnLongClickListener(v -> {
 //            visibleAllItem();
@@ -121,5 +104,9 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
 
     public List<Video> getListVideo() {
         return listVideo;
+    }
+
+    public void setEnableAllCheckbox(boolean enableAllCheckbox) {
+        this.enableAllCheckbox = enableAllCheckbox;
     }
 }

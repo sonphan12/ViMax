@@ -24,6 +24,7 @@ import com.sonphan12.vimax.di.videolist.VideoListModule;
 import com.sonphan12.vimax.ui.base.BaseFragment;
 import com.sonphan12.vimax.ui.videoedit.VideoEditActivity;
 import com.sonphan12.vimax.utils.AppConstants;
+import com.sonphan12.vimax.utils.ItemClickSupport;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VideoFragment extends BaseFragment implements VideoContract.View, VideoItemListener.OnVideoItemClick,VideoItemListener.OnVideoItemLongClick {
+public class VideoFragment extends BaseFragment implements VideoContract.View {
     @BindView(R.id.loadingProgress) ProgressBar loadingProgress;
     @BindView(R.id.lvVideos) RecyclerView lvVideos;
     @BindView(R.id.llHidden) LinearLayout llHidden;
@@ -64,8 +65,9 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
 
         ButterKnife.bind(this, v);
 
-        videoAdapter = new VideoAdapter(getContext(),  this, this);
-
+        videoAdapter = new VideoAdapter(getContext());
+        ItemClickSupport.addTo(lvVideos).setOnItemClickListener((recyclerView, position, v1) -> onVideoItemClick(v1, position));
+        ItemClickSupport.addTo(lvVideos).setOnItemLongClickListener((recyclerView, position, v12) -> onVideoItemLongClick(v12, position));
         lvVideos.setLayoutManager(layoutManager);
         lvVideos.setAdapter(videoAdapter);
 
@@ -112,7 +114,6 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
         presenter.destroy();
     }
 
-    @Override
     public void onVideoItemClick(View v, int position) {
             Intent intent = new Intent(getContext(), VideoEditActivity.class);
             intent.putExtra(AppConstants.EXTRA_VIDEO_PATH, videoAdapter.getListVideo().get(position).getFileSrc());
@@ -120,9 +121,15 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
     }
 
 
-    @Override
-    public void onVideoItemLongClick(View v, int position) {
-
+    public boolean onVideoItemLongClick(View v, int position) {
+        Video video = videoAdapter.getListVideo().get(position);
+        videoAdapter.setEnableAllCheckbox(true);
+        video.setChecked(true);
+        videoAdapter.notifyDataSetChanged();
+        llHidden.setVisibility(View.VISIBLE);
+        return false;
     }
+
+
 
 }
