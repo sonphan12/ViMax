@@ -1,61 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardViewVideo"
+    app:cardCornerRadius="@dimen/card_radius"
+    app:cardElevation="@dimen/card_space"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_marginBottom="@dimen/card_space"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardViewVideo"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/card_radius"
-        app:cardElevation="@dimen/card_space"
-        android:layout_marginBottom="@dimen/card_space"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground">
-        <RelativeLayout
+        android:padding="@dimen/text_padding">
+
+        <ImageView
+            android:id="@+id/imgVideoImage"
+            android:layout_width="@dimen/image_folder_width"
+            android:layout_height="@dimen/image_folder_height" />
+
+        <CheckBox
+            android:id="@+id/chkSelect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/txtVideoName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/text_padding">
+            android:layout_below="@id/chkSelect"
+            android:layout_toEndOf="@id/imgVideoImage"
+            android:paddingLeft="@dimen/text_padding"
+            android:paddingRight="@dimen/text_padding"
+            android:singleLine="true"
+            android:text="@string/text_holder" />
 
-            <ImageView
-                android:id="@+id/imgVideoImage"
-                android:layout_width="@dimen/image_folder_width"
-                android:layout_height="@dimen/image_folder_height" />
+        <TextView
+            android:id="@+id/txtDuration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtVideoName"
+            android:layout_marginTop="@dimen/text_padding"
+            android:layout_toEndOf="@id/imgVideoImage"
+            android:paddingLeft="@dimen/text_padding"
+            android:paddingRight="@dimen/text_padding"
+            android:text="@string/text_holder" />
 
-            <CheckBox
-                android:id="@+id/chkSelect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"
-                android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
 
-            <TextView
-                android:id="@+id/txtVideoName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/text_padding"
-                android:paddingRight="@dimen/text_padding"
-                android:text="@string/text_holder"
-                android:singleLine="true"
-                android:layout_toEndOf="@id/imgVideoImage"
-                android:layout_below="@id/chkSelect"/>
+</android.support.v7.widget.CardView>
 
-            <TextView
-                android:id="@+id/txtDuration"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/text_padding"
-                android:paddingRight="@dimen/text_padding"
-                android:layout_marginTop="@dimen/text_padding"
-                android:text="@string/text_holder"
-                android:layout_toEndOf="@id/imgVideoImage"
-                android:layout_below="@id/txtVideoName"/>
-
-        </RelativeLayout>
-
-    </android.support.v7.widget.CardView>
-
-</LinearLayout>
