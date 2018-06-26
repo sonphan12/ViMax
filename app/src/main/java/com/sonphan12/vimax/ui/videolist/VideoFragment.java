@@ -127,9 +127,23 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
         video.setChecked(true);
         videoAdapter.notifyDataSetChanged();
         llHidden.setVisibility(View.VISIBLE);
+        setInitialState(false);
         return false;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        returnToInitialState();
+    }
 
-
+    private void returnToInitialState() {
+        for (Video video : videoAdapter.getListVideo()) {
+            video.setChecked(false);
+        }
+        videoAdapter.setEnableAllCheckbox(false);
+        videoAdapter.notifyDataSetChanged();
+        llHidden.setVisibility(View.GONE);
+        setInitialState(true);
+    }
 }
