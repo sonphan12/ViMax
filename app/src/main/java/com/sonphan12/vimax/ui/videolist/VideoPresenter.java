@@ -1,16 +1,23 @@
 package com.sonphan12.vimax.ui.videolist;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
 import com.sonphan12.vimax.data.OfflineVideoRepository;
+import com.sonphan12.vimax.data.model.Video;
+import com.sonphan12.vimax.ui.base.BaseFragment;
 import com.sonphan12.vimax.utils.AppConstants;
 import com.sonphan12.vimax.utils.ApplyScheduler;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import java.io.File;
+import java.util.List;
+
 
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -44,6 +51,60 @@ public class VideoPresenter implements VideoContract.Presenter {
                         view.hideProgressCircle();
                         view.showVideos(videos);
                     }, e -> view.showToastMessage(e.toString(), Toast.LENGTH_SHORT)));
+        }
+    }
+
+    @Override
+    public void setCheckAll(List<Video> listVideo) {
+        for (Video video : listVideo) {
+            video.setChecked(true);
+        }
+        view.showVideos(listVideo);
+    }
+
+    @Override
+    public void setUncheckAll(List<Video> listVideo) {
+        for (Video video : listVideo) {
+            video.setChecked(false);
+        }
+        view.showVideos(listVideo);
+    }
+
+    @Override
+    public void returnToInitialState(VideoAdapter adapter) {
+        for (Video video : adapter.getListVideo()) {
+            video.setChecked(false);
+        }
+        adapter.setEnableAllCheckbox(false);
+        adapter.notifyDataSetChanged();
+        view.hideHiddenLayout();
+        ((BaseFragment) view).setInitialState(true);
+    }
+
+    @Override
+    public boolean enableAllCheckBox(VideoAdapter adapter, int position) {
+        Video video = adapter.getListVideo().get(position);
+        adapter.setEnableAllCheckbox(true);
+        video.setChecked(true);
+        adapter.notifyDataSetChanged();
+        view.showHiddenLayout();
+        ((BaseFragment)view).setInitialState(false);
+        return false;
+    }
+
+    @Override
+    public void deleteCheckedVideos(List<Video> listVideo) {
+        for (Video video : listVideo) {
+            if (video.isChecked()) {
+                File file = new File(video.getFileSrc());
+                if (file.exists()) {
+                    Uri uri = Uri.fromFile(new File(file.getPath()));
+                    boolean isSuccess = file.delete();
+                    if (isSuccess) {
+                        ((BaseFragment)view).getActivity().getContentResolver().delete(uri, null, null);
+                    }
+                }
+            }
         }
     }
 

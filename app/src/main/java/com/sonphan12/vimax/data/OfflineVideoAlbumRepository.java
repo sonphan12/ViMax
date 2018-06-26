@@ -25,7 +25,9 @@ public class OfflineVideoAlbumRepository{
             if (c != null) {
                 while (c.moveToNext()) {
                     Album album = new Album(c.getString(0), Integer.parseInt(c.getString(1)));
-                    listAlbum.add(album);
+                    if (album.getNumVideos() > 0) {
+                        listAlbum.add(album);
+                    }
                 }
                 c.close();
             }

@@ -52,23 +52,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.FolderViewHo
         Album album = listAlbum.get(position);
         holder.txtAlbumName.setText(album.getName());
         holder.txtNumVideo.setText(String.valueOf(album.getNumVideos()));
-
-        // Switch to video fragment
-        holder.cardViewAlbum.setOnClickListener(v -> {
-            FragmentManager fm = ((AppCompatActivity) ctx).getSupportFragmentManager();
-            FragmentTransaction transaction = fm.beginTransaction();
-            VideoFragment videoFragment = new VideoFragment();
-
-            Bundle bundle = new Bundle();
-            bundle.putString(AppConstants.EXTRA_ALBUM_NAME, album.getName());
-            videoFragment.setArguments(bundle);
-
-            transaction.replace(R.id.fragmentDummy, videoFragment);
-            transaction.addToBackStack(null);
-
-            transaction.commit();
-        });
-
     }
 
     @Override
@@ -89,5 +72,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.FolderViewHo
 
     public void setListAlbum(List<Album> listAlbum) {
         this.listAlbum = listAlbum;
+    }
+
+    public List<Album> getListAlbum() {
+        return listAlbum;
     }
 }

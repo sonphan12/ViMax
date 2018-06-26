@@ -123,39 +123,25 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
 
 
     public boolean onVideoItemLongClick(View v, int position) {
-        Video video = videoAdapter.getListVideo().get(position);
-        videoAdapter.setEnableAllCheckbox(true);
-        video.setChecked(true);
-        videoAdapter.notifyDataSetChanged();
-        llHidden.setVisibility(View.VISIBLE);
-        setInitialState(false);
-        return false;
+        return presenter.enableAllCheckBox(videoAdapter, position);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        returnToInitialState();
-    }
-
-    private void returnToInitialState() {
-        for (Video video : videoAdapter.getListVideo()) {
-            video.setChecked(false);
-        }
-        videoAdapter.setEnableAllCheckbox(false);
-        videoAdapter.notifyDataSetChanged();
-        llHidden.setVisibility(View.GONE);
-        setInitialState(true);
+        presenter.returnToInitialState(videoAdapter);
     }
 
     @OnClick({R.id.btnDelete, R.id.btnSelectAll})
     public void onButtonClick(View v) {
         switch (v.getId()) {
             case R.id.btnDelete:
-                // TODO: Impl delete
+                presenter.deleteCheckedVideos(videoAdapter.getListVideo());
+                presenter.getVideos(getContext());
                 break;
             case R.id.btnSelectAll:
-
+                presenter.setCheckAll(videoAdapter.getListVideo());
+                break;
         }
     }
 

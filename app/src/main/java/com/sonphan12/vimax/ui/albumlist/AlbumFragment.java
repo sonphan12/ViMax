@@ -3,6 +3,8 @@ package com.sonphan12.vimax.ui.albumlist;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +19,9 @@ import com.sonphan12.vimax.di.albumlist.AlbumListComponent;
 import com.sonphan12.vimax.di.albumlist.AlbumListModule;
 import com.sonphan12.vimax.di.albumlist.DaggerAlbumListComponent;
 import com.sonphan12.vimax.ui.base.BaseFragment;
+import com.sonphan12.vimax.ui.videolist.VideoFragment;
+import com.sonphan12.vimax.utils.AppConstants;
+import com.sonphan12.vimax.utils.ItemClickSupport;
 
 import java.util.List;
 
@@ -32,12 +37,12 @@ import butterknife.ButterKnife;
 public class AlbumFragment extends BaseFragment implements AlbumContract.View {
     @BindView(R.id.loadingProgress) ProgressBar loadingProgress;
     @BindView(R.id.lvAlbums) RecyclerView lvAlbums;
-    @Inject
     AlbumAdapter albumAdapter;
     @Inject
     AlbumContract.Presenter presenter;
     @Inject
     LinearLayoutManager layoutManager;
+    public static final String FRAGMENT_TAG = "Album";
 
     public AlbumFragment() {
         // Required empty public constructor
@@ -52,6 +57,9 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
         inject();
 
         ButterKnife.bind(this, v);
+        albumAdapter = new AlbumAdapter(getContext());
+        ItemClickSupport.addTo(lvAlbums).setOnItemClickListener((recyclerView, position, v1) -> onAlbumItemClick(v1, position));
+        ItemClickSupport.addTo(lvAlbums).setOnItemLongClickListener((recyclerView, position, v12) -> onAlbumItemLongClick(v12, position));
         lvAlbums.setLayoutManager(layoutManager);
         lvAlbums.setAdapter(albumAdapter);
 
@@ -59,6 +67,30 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
         presenter.getAlbums(getContext());
 
         return v;
+    }
+
+
+    private void onAlbumItemClick(View v, int position) {
+        // Switch to video fragment
+        Album album = albumAdapter.getListAlbum().get(position);
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        VideoFragment videoFragment = new VideoFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(AppConstants.EXTRA_ALBUM_NAME, album.getName());
+        videoFragment.setArguments(bundle);
+
+        transaction.replace(R.id.fragmentDummy, videoFragment);
+        transaction.addToBackStack(null);
+
+
+        transaction.commit();
+    }
+
+    private boolean onAlbumItemLongClick(View v, int position) {
+        // TODO: Impl On Item Long Click
+        return false;
     }
 
     private void inject() {
@@ -96,4 +128,16 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
         super.onDestroyView();
         presenter.destroy();
     }
+
+
+    @Override
+    public void showHiddenLayout() {
+        // TODO: Impl show hidden layout
+    }
+
+    @Override
+    public void hideHiddenLayout() {
+        // TODO: Impl hide hidden layout
+    }
+
 }
