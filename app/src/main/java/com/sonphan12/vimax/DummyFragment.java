@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sonphan12.vimax.ui.albumlist.AlbumFragment;
+import com.sonphan12.vimax.ui.base.BaseFragment;
 import com.sonphan12.vimax.ui.videolist.VideoFragment;
 import com.sonphan12.vimax.utils.AppConstants;
 
@@ -18,8 +19,7 @@ import com.sonphan12.vimax.utils.AppConstants;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DummyFragment extends Fragment {
-
+public class DummyFragment extends BaseFragment {
 
     public DummyFragment() {
         // Required empty public constructor

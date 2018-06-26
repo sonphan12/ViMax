@@ -32,6 +32,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 /**
@@ -146,4 +147,26 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
         llHidden.setVisibility(View.GONE);
         setInitialState(true);
     }
+
+    @OnClick({R.id.btnDelete, R.id.btnSelectAll})
+    public void onButtonClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnDelete:
+                // TODO: Impl delete
+                break;
+            case R.id.btnSelectAll:
+
+        }
+    }
+
+    @Override
+    public void showHiddenLayout() {
+        llHidden.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideHiddenLayout() {
+        llHidden.setVisibility(View.GONE);
+    }
+
 }

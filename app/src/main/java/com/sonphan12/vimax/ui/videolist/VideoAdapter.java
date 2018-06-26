@@ -64,20 +64,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
         }
 
         holder.chkSelect.setChecked(video.isChecked());
-
-//        holder.cardViewVideo.setOnClickListener(v -> {
-//            Intent intent = new Intent(ctx, VideoEditActivity.class);
-//            intent.putExtra(AppConstants.EXTRA_VIDEO_PATH, listVideo.get(position).getFileSrc());
-//            ctx.startActivity(intent);
-//        });
-
-//        holder.cardViewVideo.setOnLongClickListener(v -> {
-//            visibleAllItem();
-//            uncheckAllItem();
-//            holder.chkSelect.setChecked(true);
-//            video.setChecked(true);
-//            notifyDataSetChanged();
-//        });
     }
 
     @Override
