@@ -10,15 +10,7 @@ import java.io.File;
 
 public class Video {
     private String name;
-
-
-    public String getFileSrc() {
-        return fileSrc;
-    }
-
-    public void setFileSrc(String fileSrc) {
-        this.fileSrc = fileSrc;
-    }
+    private boolean isChecked;
 
     private String duration;
     private String fileSrc;
@@ -27,6 +19,7 @@ public class Video {
         this.fileSrc = fileSrc;
         this.name = name;
         this.duration = duration;
+        this.isChecked = false;
     }
     public Video() {
 
@@ -45,6 +38,14 @@ public class Video {
         this.name = name;
     }
 
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
     public String getDuration() {
         if (duration == null || duration.equals("")) {
             duration = "88:88:88";
@@ -54,5 +55,13 @@ public class Video {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public String getFileSrc() {
+        return fileSrc;
+    }
+
+    public void setFileSrc(String fileSrc) {
+        this.fileSrc = fileSrc;
     }
 }

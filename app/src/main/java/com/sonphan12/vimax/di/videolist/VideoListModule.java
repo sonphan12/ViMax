@@ -15,10 +15,6 @@ import io.reactivex.disposables.CompositeDisposable;
 
 @Module
 public class VideoListModule {
-    @Provides
-    VideoAdapter videoAdapter(Context context) {
-        return new VideoAdapter(context);
-    }
 
     @Provides
     VideoContract.Presenter videoPresenter(OfflineVideoRepository offlineVideoRepository

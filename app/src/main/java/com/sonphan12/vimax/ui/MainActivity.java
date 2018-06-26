@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import com.sonphan12.vimax.DummyFragment;
 import com.sonphan12.vimax.R;
 import com.sonphan12.vimax.ui.albumlist.AlbumFragment;
+import com.sonphan12.vimax.ui.base.BaseFragment;
 import com.sonphan12.vimax.ui.videolist.VideoFragment;
 
 import java.util.ArrayList;
@@ -46,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
 
         setUpPager(mainPager);
         mainTab.setupWithViewPager(mainPager);
-
     }
 
     private void setUpPager(ViewPager mainPager) {
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         private final List<Fragment> fragmentList = new ArrayList<>();
         private final List<String> fragmentTitleList = new ArrayList<>();
 
-        public MainPagerAdapter(FragmentManager fm) {
+        MainPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             return fragmentList.size();
         }
 
-        public void addFragment(Fragment fragment, String title) {
+        void addFragment(Fragment fragment, String title) {
             fragmentList.add(fragment);
             fragmentTitleList.add(title);
         }
@@ -113,6 +113,19 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             return fragmentTitleList.get(position);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        int index = mainPager.getCurrentItem();
+        BaseFragment currentFragment = (BaseFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:"
+                + R.id.mainPager + ":" + index);
+        if (currentFragment != null) {
+            if (currentFragment.isInitialState()) super.onBackPressed();
+            currentFragment.onBackPressed();
+        } else {
+            super.onBackPressed();
         }
     }
 }

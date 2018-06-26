@@ -2,6 +2,7 @@ package com.sonphan12.vimax.ui.videolist;
 
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.sonphan12.vimax.R;
@@ -18,6 +22,9 @@ import com.sonphan12.vimax.di.videolist.DaggerVideoListComponent;
 import com.sonphan12.vimax.di.videolist.VideoListComponent;
 import com.sonphan12.vimax.di.videolist.VideoListModule;
 import com.sonphan12.vimax.ui.base.BaseFragment;
+import com.sonphan12.vimax.ui.videoedit.VideoEditActivity;
+import com.sonphan12.vimax.utils.AppConstants;
+import com.sonphan12.vimax.utils.ItemClickSupport;
 
 import java.util.List;
 
@@ -25,6 +32,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 /**
@@ -33,7 +41,9 @@ import butterknife.ButterKnife;
 public class VideoFragment extends BaseFragment implements VideoContract.View {
     @BindView(R.id.loadingProgress) ProgressBar loadingProgress;
     @BindView(R.id.lvVideos) RecyclerView lvVideos;
-    @Inject
+    @BindView(R.id.llHidden) LinearLayout llHidden;
+    @BindView(R.id.btnDelete) Button btnDelete;
+    @BindView(R.id.btnSelectAll) Button btnSelectAll;
     VideoAdapter videoAdapter;
     @Inject
     VideoContract.Presenter presenter;
@@ -56,6 +66,9 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
 
         ButterKnife.bind(this, v);
 
+        videoAdapter = new VideoAdapter(getContext());
+        ItemClickSupport.addTo(lvVideos).setOnItemClickListener((recyclerView, position, v1) -> onVideoItemClick(v1, position));
+        ItemClickSupport.addTo(lvVideos).setOnItemLongClickListener((recyclerView, position, v12) -> onVideoItemLongClick(v12, position));
         lvVideos.setLayoutManager(layoutManager);
         lvVideos.setAdapter(videoAdapter);
 
@@ -101,4 +114,59 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
         super.onDestroyView();
         presenter.destroy();
     }
+
+    public void onVideoItemClick(View v, int position) {
+            Intent intent = new Intent(getContext(), VideoEditActivity.class);
+            intent.putExtra(AppConstants.EXTRA_VIDEO_PATH, videoAdapter.getListVideo().get(position).getFileSrc());
+            getContext().startActivity(intent);
+    }
+
+
+    public boolean onVideoItemLongClick(View v, int position) {
+        Video video = videoAdapter.getListVideo().get(position);
+        videoAdapter.setEnableAllCheckbox(true);
+        video.setChecked(true);
+        videoAdapter.notifyDataSetChanged();
+        llHidden.setVisibility(View.VISIBLE);
+        setInitialState(false);
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        returnToInitialState();
+    }
+
+    private void returnToInitialState() {
+        for (Video video : videoAdapter.getListVideo()) {
+            video.setChecked(false);
+        }
+        videoAdapter.setEnableAllCheckbox(false);
+        videoAdapter.notifyDataSetChanged();
+        llHidden.setVisibility(View.GONE);
+        setInitialState(true);
+    }
+
+    @OnClick({R.id.btnDelete, R.id.btnSelectAll})
+    public void onButtonClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnDelete:
+                // TODO: Impl delete
+                break;
+            case R.id.btnSelectAll:
+
+        }
+    }
+
+    @Override
+    public void showHiddenLayout() {
+        llHidden.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideHiddenLayout() {
+        llHidden.setVisibility(View.GONE);
+    }
+
 }
