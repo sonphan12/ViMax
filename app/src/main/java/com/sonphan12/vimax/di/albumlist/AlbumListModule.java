@@ -17,9 +17,4 @@ public class AlbumListModule {
                                            CompositeDisposable disposable) {
         return new AlbumPresenter(offlineVideoAlbumRepository, disposable);
     }
-
-    @Provides
-    OfflineVideoAlbumRepository offlineVideoAlbumRepository() {
-        return new OfflineVideoAlbumRepository();
-    }
 }

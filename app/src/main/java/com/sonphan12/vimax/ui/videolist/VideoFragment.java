@@ -11,16 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.sonphan12.vimax.R;
+import com.sonphan12.vimax.ViMaxApplication;
 import com.sonphan12.vimax.data.model.Video;
-import com.sonphan12.vimax.di.application.ApplicationModule;
-import com.sonphan12.vimax.di.videolist.DaggerVideoListComponent;
-import com.sonphan12.vimax.di.videolist.VideoListComponent;
-import com.sonphan12.vimax.di.videolist.VideoListModule;
 import com.sonphan12.vimax.ui.base.BaseFragment;
 import com.sonphan12.vimax.ui.videoedit.VideoEditActivity;
 import com.sonphan12.vimax.utils.AppConstants;
@@ -62,7 +58,7 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
 
         View v = inflater.inflate(R.layout.fragment_video, container, false);
 
-        inject();
+        ((ViMaxApplication)getActivity().getApplication()).createVideoListComponent().inject(this);
 
         ButterKnife.bind(this, v);
 
@@ -77,14 +73,6 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
 
         // Inflate the layout for this fragment
         return v;
-    }
-
-    private void inject() {
-        VideoListComponent component =
-                DaggerVideoListComponent.builder().applicationModule(new ApplicationModule(getContext()))
-                .videoListModule(new VideoListModule())
-                .build();
-        component.inject(this);
     }
 
     @Override
@@ -155,4 +143,9 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
         llHidden.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ((ViMaxApplication)getActivity().getApplication()).releaseVideoListComponent();
+    }
 }

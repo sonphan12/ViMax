@@ -17,9 +17,4 @@ public class VideoListModule {
             , CompositeDisposable compositeDisposable) {
         return new VideoPresenter(offlineVideoRepository, compositeDisposable);
     }
-
-    @Provides
-    OfflineVideoRepository offlineVideoRepository() {
-        return new OfflineVideoRepository();
-    }
 }

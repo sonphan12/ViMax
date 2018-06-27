@@ -13,11 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.sonphan12.vimax.R;
+import com.sonphan12.vimax.ViMaxApplication;
 import com.sonphan12.vimax.data.model.Album;
-import com.sonphan12.vimax.di.application.ApplicationModule;
-import com.sonphan12.vimax.di.albumlist.AlbumListComponent;
-import com.sonphan12.vimax.di.albumlist.AlbumListModule;
-import com.sonphan12.vimax.di.albumlist.DaggerAlbumListComponent;
 import com.sonphan12.vimax.ui.base.BaseFragment;
 import com.sonphan12.vimax.ui.videolist.VideoFragment;
 import com.sonphan12.vimax.utils.AppConstants;
@@ -54,7 +51,7 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_album, container, false);
 
-        inject();
+        ((ViMaxApplication)getActivity().getApplication()).createAlbumListComponent().inject(this);
 
         ButterKnife.bind(this, v);
         albumAdapter = new AlbumAdapter(getContext());
@@ -91,14 +88,6 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
     private boolean onAlbumItemLongClick(View v, int position) {
         // TODO: Impl On Item Long Click
         return false;
-    }
-
-    private void inject() {
-        AlbumListComponent component = DaggerAlbumListComponent.builder()
-                .applicationModule(new ApplicationModule(getContext()))
-                .albumListModule(new AlbumListModule())
-                .build();
-        component.inject(this);
     }
 
     @Override
@@ -140,4 +129,9 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
         // TODO: Impl hide hidden layout
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ((ViMaxApplication)getActivity().getApplication()).releaseAlbumListComponent();
+    }
 }

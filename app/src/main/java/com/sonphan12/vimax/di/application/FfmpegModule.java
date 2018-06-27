@@ -1,4 +1,4 @@
-package com.sonphan12.vimax.di;
+package com.sonphan12.vimax.di.application;
 
 import android.content.Context;
 

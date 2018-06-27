@@ -2,12 +2,12 @@ package com.sonphan12.vimax.di.application;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
-import com.sonphan12.vimax.di.FfmpegModule;
+
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.disposables.CompositeDisposable;
 
-@Module(includes = FfmpegModule.class)
+@Module
 public class ApplicationModule {
     Context context;
 
