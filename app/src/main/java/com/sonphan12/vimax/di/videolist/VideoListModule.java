@@ -1,10 +1,6 @@
 package com.sonphan12.vimax.di.videolist;
 
-import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
-
 import com.sonphan12.vimax.data.OfflineVideoRepository;
-import com.sonphan12.vimax.ui.videolist.VideoAdapter;
 import com.sonphan12.vimax.ui.videolist.VideoContract;
 import com.sonphan12.vimax.ui.videolist.VideoPresenter;
 
