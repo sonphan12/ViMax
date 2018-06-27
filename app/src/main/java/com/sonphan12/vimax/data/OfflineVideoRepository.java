@@ -1,6 +1,5 @@
 package com.sonphan12.vimax.data;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;

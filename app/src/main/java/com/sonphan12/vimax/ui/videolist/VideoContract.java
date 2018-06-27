@@ -20,5 +20,15 @@ public interface VideoContract {
 
     interface Presenter extends BasePresenter<View> {
         void getVideos(Context ctx);
+        void setCheckAll(List<Video> listVideo);
+        void setUncheckAll(List<Video> listVideo);
+        void returnToInitialState(VideoAdapter adapter);
+        boolean enableAllCheckBox(VideoAdapter adapter, int position);
+        void deleteCheckedVideos(List<Video> listVideo);
+        void checkVideo(Video video);
+    }
+
+    interface VideoItemListener {
+        void onCheckClick(int position);
     }
 }

@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    MainPagerAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpPager(ViewPager mainPager) {
-        MainPagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager());
+        adapter = new MainPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new DummyFragment(), "Album");
         adapter.addFragment(new VideoFragment(), "Video");
         mainPager.setAdapter(adapter);
@@ -118,9 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        int index = mainPager.getCurrentItem();
-        BaseFragment currentFragment = (BaseFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:"
-                + R.id.mainPager + ":" + index);
+        BaseFragment currentFragment = (BaseFragment) adapter.getItem(mainPager.getCurrentItem());
         if (currentFragment != null) {
             if (currentFragment.isInitialState()) super.onBackPressed();
             currentFragment.onBackPressed();

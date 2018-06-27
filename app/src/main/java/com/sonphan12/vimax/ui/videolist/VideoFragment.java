@@ -11,16 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.sonphan12.vimax.R;
+import com.sonphan12.vimax.ViMaxApplication;
 import com.sonphan12.vimax.data.model.Video;
-import com.sonphan12.vimax.di.application.ApplicationModule;
-import com.sonphan12.vimax.di.videolist.DaggerVideoListComponent;
-import com.sonphan12.vimax.di.videolist.VideoListComponent;
-import com.sonphan12.vimax.di.videolist.VideoListModule;
 import com.sonphan12.vimax.ui.base.BaseFragment;
 import com.sonphan12.vimax.ui.videoedit.VideoEditActivity;
 import com.sonphan12.vimax.utils.AppConstants;
@@ -38,7 +34,7 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VideoFragment extends BaseFragment implements VideoContract.View {
+public class VideoFragment extends BaseFragment implements VideoContract.View, VideoContract.VideoItemListener {
     @BindView(R.id.loadingProgress) ProgressBar loadingProgress;
     @BindView(R.id.lvVideos) RecyclerView lvVideos;
     @BindView(R.id.llHidden) LinearLayout llHidden;
@@ -62,11 +58,11 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
 
         View v = inflater.inflate(R.layout.fragment_video, container, false);
 
-        inject();
+        ((ViMaxApplication)getActivity().getApplication()).createVideoListComponent().inject(this);
 
         ButterKnife.bind(this, v);
 
-        videoAdapter = new VideoAdapter(getContext());
+        videoAdapter = new VideoAdapter(getContext(), this);
         ItemClickSupport.addTo(lvVideos).setOnItemClickListener((recyclerView, position, v1) -> onVideoItemClick(v1, position));
         ItemClickSupport.addTo(lvVideos).setOnItemLongClickListener((recyclerView, position, v12) -> onVideoItemLongClick(v12, position));
         lvVideos.setLayoutManager(layoutManager);
@@ -77,14 +73,6 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
 
         // Inflate the layout for this fragment
         return v;
-    }
-
-    private void inject() {
-        VideoListComponent component =
-                DaggerVideoListComponent.builder().applicationModule(new ApplicationModule(getContext()))
-                .videoListModule(new VideoListModule())
-                .build();
-        component.inject(this);
     }
 
     @Override
@@ -123,39 +111,25 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
 
 
     public boolean onVideoItemLongClick(View v, int position) {
-        Video video = videoAdapter.getListVideo().get(position);
-        videoAdapter.setEnableAllCheckbox(true);
-        video.setChecked(true);
-        videoAdapter.notifyDataSetChanged();
-        llHidden.setVisibility(View.VISIBLE);
-        setInitialState(false);
-        return false;
+        return presenter.enableAllCheckBox(videoAdapter, position);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        returnToInitialState();
-    }
-
-    private void returnToInitialState() {
-        for (Video video : videoAdapter.getListVideo()) {
-            video.setChecked(false);
-        }
-        videoAdapter.setEnableAllCheckbox(false);
-        videoAdapter.notifyDataSetChanged();
-        llHidden.setVisibility(View.GONE);
-        setInitialState(true);
+        presenter.returnToInitialState(videoAdapter);
     }
 
     @OnClick({R.id.btnDelete, R.id.btnSelectAll})
     public void onButtonClick(View v) {
         switch (v.getId()) {
             case R.id.btnDelete:
-                // TODO: Impl delete
+                presenter.deleteCheckedVideos(videoAdapter.getListVideo());
+                presenter.getVideos(getContext());
                 break;
             case R.id.btnSelectAll:
-
+                presenter.setCheckAll(videoAdapter.getListVideo());
+                break;
         }
     }
 
@@ -169,4 +143,15 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
         llHidden.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ((ViMaxApplication)getActivity().getApplication()).releaseVideoListComponent();
+    }
+
+    @Override
+    public void onCheckClick(int position) {
+        Video video = videoAdapter.getListVideo().get(position);
+        presenter.checkVideo(video);
+    }
 }

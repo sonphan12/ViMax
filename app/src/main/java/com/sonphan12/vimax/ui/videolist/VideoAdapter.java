@@ -13,33 +13,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.sonphan12.vimax.R;
 import com.sonphan12.vimax.data.model.Video;
-import com.sonphan12.vimax.ui.videoedit.VideoEditActivity;
-import com.sonphan12.vimax.utils.AppConstants;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHolder> {
     List<Video> listVideo;
     Context ctx;
     boolean enableAllCheckbox;
+    VideoContract.VideoItemListener videoItemListener;
 
-    public VideoAdapter(Context ctx) {
+    public VideoAdapter(Context ctx, VideoContract.VideoItemListener videoItemListener) {
         this.ctx = ctx;
         listVideo = new ArrayList<>();
         this.enableAllCheckbox = false;
+        this.videoItemListener = videoItemListener;
     }
 
     @NonNull
@@ -64,6 +57,8 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
         }
 
         holder.chkSelect.setChecked(video.isChecked());
+
+        holder.chkSelect.setOnClickListener(v -> videoItemListener.onCheckClick(position));
     }
 
     @Override
