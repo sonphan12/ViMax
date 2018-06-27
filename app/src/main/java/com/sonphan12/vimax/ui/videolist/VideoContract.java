@@ -25,5 +25,10 @@ public interface VideoContract {
         void returnToInitialState(VideoAdapter adapter);
         boolean enableAllCheckBox(VideoAdapter adapter, int position);
         void deleteCheckedVideos(List<Video> listVideo);
+        void checkVideo(Video video);
+    }
+
+    interface VideoItemListener {
+        void onCheckClick(int position);
     }
 }

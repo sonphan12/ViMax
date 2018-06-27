@@ -34,7 +34,7 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class VideoFragment extends BaseFragment implements VideoContract.View {
+public class VideoFragment extends BaseFragment implements VideoContract.View, VideoContract.VideoItemListener {
     @BindView(R.id.loadingProgress) ProgressBar loadingProgress;
     @BindView(R.id.lvVideos) RecyclerView lvVideos;
     @BindView(R.id.llHidden) LinearLayout llHidden;
@@ -62,7 +62,7 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
 
         ButterKnife.bind(this, v);
 
-        videoAdapter = new VideoAdapter(getContext());
+        videoAdapter = new VideoAdapter(getContext(), this);
         ItemClickSupport.addTo(lvVideos).setOnItemClickListener((recyclerView, position, v1) -> onVideoItemClick(v1, position));
         ItemClickSupport.addTo(lvVideos).setOnItemLongClickListener((recyclerView, position, v12) -> onVideoItemLongClick(v12, position));
         lvVideos.setLayoutManager(layoutManager);
@@ -147,5 +147,11 @@ public class VideoFragment extends BaseFragment implements VideoContract.View {
     public void onDestroy() {
         super.onDestroy();
         ((ViMaxApplication)getActivity().getApplication()).releaseVideoListComponent();
+    }
+
+    @Override
+    public void onCheckClick(int position) {
+        Video video = videoAdapter.getListVideo().get(position);
+        presenter.checkVideo(video);
     }
 }

@@ -94,18 +94,30 @@ public class VideoPresenter implements VideoContract.Presenter {
 
     @Override
     public void deleteCheckedVideos(List<Video> listVideo) {
+        int numVideoToDelete = 0;
+        int numDeletedVideo = 0;
         for (Video video : listVideo) {
             if (video.isChecked()) {
+                numVideoToDelete++;
                 File file = new File(video.getFileSrc());
                 if (file.exists()) {
-                    Uri uri = Uri.fromFile(new File(file.getPath()));
+//                    Uri uri = Uri.fromFile(new File(file.getAbsolutePath()));
+//                    ((BaseFragment)view).getActivity().getContentResolver().delete(uri, null, null);
                     boolean isSuccess = file.delete();
                     if (isSuccess) {
-                        ((BaseFragment)view).getActivity().getContentResolver().delete(uri, null, null);
+                        numDeletedVideo++;
                     }
                 }
             }
         }
+        String deleteMessage = "Deleted " + String.valueOf(numDeletedVideo) + "/" +
+                String.valueOf(numVideoToDelete) + " videos";
+        view.showToastMessage(deleteMessage, Toast.LENGTH_SHORT);
+    }
+
+    @Override
+    public void checkVideo(Video video) {
+        video.setChecked(!video.isChecked());
     }
 
 
