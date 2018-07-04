@@ -1,10 +1,15 @@
 package com.sonphan12.vimax.ui.albumlist;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -39,6 +44,7 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
     AlbumContract.Presenter presenter;
     @Inject
     LinearLayoutManager layoutManager;
+    BroadcastReceiver receiver;
     public static final String FRAGMENT_TAG = "Album";
 
     public AlbumFragment() {
@@ -62,6 +68,17 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
 
         presenter.setView(this);
         presenter.getAlbums(getContext());
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                presenter.onReceiveAction(context, intent);
+            }
+        };
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(AppConstants.ACTION_UPDATE_DATA);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, intentFilter);
 
         return v;
     }
@@ -96,6 +113,7 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
         presenter.getAlbums(getContext());
     }
 
+
     @Override
     public void showAlbums(List<Album> listAlbum) {
         albumAdapter.setListAlbum(listAlbum);
@@ -116,6 +134,7 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
     public void onDestroyView() {
         super.onDestroyView();
         presenter.destroy();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
     }
 
 

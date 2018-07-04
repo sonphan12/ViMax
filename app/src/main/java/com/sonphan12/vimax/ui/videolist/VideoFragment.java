@@ -2,9 +2,13 @@ package com.sonphan12.vimax.ui.videolist;
 
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -45,6 +49,7 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
     VideoContract.Presenter presenter;
     @Inject
     LinearLayoutManager layoutManager;
+    BroadcastReceiver receiver;
 
     public VideoFragment() {
         // Required empty public constructor
@@ -70,6 +75,18 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
 
         presenter.setView(this);
         presenter.getVideos(getContext());
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(AppConstants.ACTION_UPDATE_DATA);
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                presenter.onReceiveAction(context, intent);
+            }
+        };
+
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, intentFilter);
 
         // Inflate the layout for this fragment
         return v;
@@ -101,6 +118,7 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
     public void onDestroyView() {
         super.onDestroyView();
         presenter.destroy();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
     }
 
     public void onVideoItemClick(View v, int position) {

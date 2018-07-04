@@ -1,8 +1,10 @@
 package com.sonphan12.vimax.ui.videolist;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import com.sonphan12.vimax.data.OfflineVideoRepository;
@@ -103,7 +105,10 @@ public class VideoPresenter implements VideoContract.Presenter {
                     disposable.add(
                             offlineVideoRepository.deleteVideo(ctx, video.getId())
                             .compose(ApplyScheduler.applySchedulersCompletable())
-                            .subscribe(() -> getVideos(ctx), Throwable::printStackTrace)
+                            .subscribe(() -> {
+                                Intent intent = new Intent(AppConstants.ACTION_UPDATE_DATA);
+                                LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent);
+                            }, Throwable::printStackTrace)
                     );
                     boolean isSuccess = file.delete();
                     if (isSuccess) {
@@ -120,6 +125,15 @@ public class VideoPresenter implements VideoContract.Presenter {
     @Override
     public void checkVideo(Video video) {
         video.setChecked(!video.isChecked());
+    }
+
+    @Override
+    public void onReceiveAction(Context context, Intent intent) {
+        switch (intent.getAction()) {
+            case AppConstants.ACTION_UPDATE_DATA:
+                getVideos(context);
+                break;
+        }
     }
 
 

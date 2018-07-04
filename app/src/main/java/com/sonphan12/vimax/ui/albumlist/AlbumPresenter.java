@@ -1,18 +1,20 @@
 package com.sonphan12.vimax.ui.albumlist;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.sonphan12.vimax.data.OfflineVideoAlbumRepository;
+import com.sonphan12.vimax.utils.AppConstants;
 import com.sonphan12.vimax.utils.ApplyScheduler;
 
 import io.reactivex.disposables.CompositeDisposable;
 
 public class AlbumPresenter implements AlbumContract.Presenter {
-    AlbumContract.View view;
-    OfflineVideoAlbumRepository offlineVideoAlbumRepository;
-    CompositeDisposable disposable;
+    private AlbumContract.View view;
+    private OfflineVideoAlbumRepository offlineVideoAlbumRepository;
+    private CompositeDisposable disposable;
 
     public AlbumPresenter(OfflineVideoAlbumRepository offlineVideoAlbumRepository,
                           CompositeDisposable disposable) {
@@ -31,6 +33,15 @@ public class AlbumPresenter implements AlbumContract.Presenter {
                     view.showToastMessage(e.toString(), Toast.LENGTH_SHORT);
                     Log.d("ERROR_GET_ALBUMS", e.toString());
                 }));
+    }
+
+    @Override
+    public void onReceiveAction(Context ctx, Intent intent) {
+        switch (intent.getAction()) {
+            case AppConstants.ACTION_UPDATE_DATA:
+                getAlbums(ctx);
+                break;
+        }
     }
 
     @Override
