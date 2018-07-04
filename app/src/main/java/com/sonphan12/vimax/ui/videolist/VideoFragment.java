@@ -125,7 +125,6 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
         switch (v.getId()) {
             case R.id.btnDelete:
                 presenter.deleteCheckedVideos(videoAdapter.getListVideo());
-                presenter.getVideos(getContext());
                 break;
             case R.id.btnSelectAll:
                 presenter.setCheckAll(videoAdapter.getListVideo());

@@ -5,7 +5,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.sonphan12.vimax.data.OfflineVideoAlbumRepository;
-import com.sonphan12.vimax.data.OfflineVideoRepository;
 import com.sonphan12.vimax.utils.ApplyScheduler;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -24,7 +23,7 @@ public class AlbumPresenter implements AlbumContract.Presenter {
     @Override
     public void getAlbums(Context ctx) {
         disposable.add(offlineVideoAlbumRepository.loadAll(ctx)
-                .compose(ApplyScheduler.applySchedulers())
+                .compose(ApplyScheduler.applySchedulersObservable())
                 .subscribe(albums -> {
                     view.hideProgressCircle();
                     view.showAlbums(albums);

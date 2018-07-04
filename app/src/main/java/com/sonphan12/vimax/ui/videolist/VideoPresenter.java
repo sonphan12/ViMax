@@ -1,12 +1,8 @@
 package com.sonphan12.vimax.ui.videolist;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
 import com.sonphan12.vimax.data.OfflineVideoRepository;
@@ -39,14 +35,14 @@ public class VideoPresenter implements VideoContract.Presenter {
         String albumName;
         if (bundle == null || (albumName = bundle.getString(AppConstants.EXTRA_ALBUM_NAME, null)) == null) {
             disposable.add(offlineVideoRepository.loadAll(ctx)
-                    .compose(ApplyScheduler.applySchedulers())
+                    .compose(ApplyScheduler.applySchedulersObservable())
                     .subscribe(videos -> {
                         view.hideProgressCircle();
                         view.showVideos(videos);
                     }, e -> view.showToastMessage(e.toString(), Toast.LENGTH_SHORT)));
         } else {
             disposable.add(offlineVideoRepository.loadFromAlbum(ctx, albumName)
-                    .compose(ApplyScheduler.applySchedulers())
+                    .compose(ApplyScheduler.applySchedulersObservable())
                     .subscribe(videos -> {
                         view.hideProgressCircle();
                         view.showVideos(videos);
@@ -94,6 +90,7 @@ public class VideoPresenter implements VideoContract.Presenter {
 
     @Override
     public void deleteCheckedVideos(List<Video> listVideo) {
+        Context ctx = ((BaseFragment)view).getContext();
         int numVideoToDelete = 0;
         int numDeletedVideo = 0;
         for (Video video : listVideo) {
@@ -101,8 +98,13 @@ public class VideoPresenter implements VideoContract.Presenter {
                 numVideoToDelete++;
                 File file = new File(video.getFileSrc());
                 if (file.exists()) {
-//                    Uri uri = Uri.fromFile(new File(file.getAbsolutePath()));
-//                    ((BaseFragment)view).getActivity().getContentResolver().delete(uri, null, null);
+//                    Uri uri = Uri.fromFile(file);
+//                    ((BaseFragment)view).getActivity().getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null);
+                    disposable.add(
+                            offlineVideoRepository.deleteVideo(ctx, video.getId())
+                            .compose(ApplyScheduler.applySchedulersCompletable())
+                            .subscribe(() -> getVideos(ctx), Throwable::printStackTrace)
+                    );
                     boolean isSuccess = file.delete();
                     if (isSuccess) {
                         numDeletedVideo++;
