@@ -13,4 +13,5 @@ public interface AppConstants {
     String EXTRA_ALBUM_NAME = "ALBUM_NAME";
     String FOLDER_NAME = "ViMax";
     String ROTATE_PROGRESS_MESSAGE = "Rotating video, please wait...";
+    String ACTION_UPDATE_DATA = "action_update_data";
 }

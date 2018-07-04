@@ -1,6 +1,7 @@
 package com.sonphan12.vimax.ui.videolist;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.sonphan12.vimax.data.model.Video;
 import com.sonphan12.vimax.ui.base.BaseFragmentView;
@@ -26,6 +27,7 @@ public interface VideoContract {
         boolean enableAllCheckBox(VideoAdapter adapter, int position);
         void deleteCheckedVideos(List<Video> listVideo);
         void checkVideo(Video video);
+        void onReceiveAction(Context context, Intent intent);
     }
 
     interface VideoItemListener {
