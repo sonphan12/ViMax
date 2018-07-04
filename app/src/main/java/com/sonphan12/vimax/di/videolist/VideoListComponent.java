@@ -1,11 +1,10 @@
 package com.sonphan12.vimax.di.videolist;
 
-import com.sonphan12.vimax.di.application.ApplicationModule;
 import com.sonphan12.vimax.ui.videolist.VideoFragment;
 
-import dagger.Component;
+import dagger.Subcomponent;
 
-@Component(modules = {ApplicationModule.class, VideoListModule.class})
+@Subcomponent(modules = {VideoListModule.class})
 public interface VideoListComponent {
     void inject(VideoFragment fragment);
 }
