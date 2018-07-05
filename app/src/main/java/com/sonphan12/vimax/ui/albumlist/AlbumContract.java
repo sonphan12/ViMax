@@ -15,10 +15,15 @@ public interface AlbumContract {
         void showAlbums(List<Album> listAlbum);
         void showProgressCircle();
         void hideProgressCircle();
+        void showBackOnTopButton();
+        void hideBackOnTopButton();
+        void scrollOnTop();
     }
 
     interface Presenter extends BasePresenter<View> {
         void getAlbums(Context ctx);
         void onReceiveAction(Context ctx, Intent intent);
+        void onListScroll(int lastVisiblePosition, int listSize, int dx, int dy);
+        void onBtnBackOnTopClicked();
     }
 }

@@ -217,6 +217,7 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
         llHidden.setVisibility(View.GONE);
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();

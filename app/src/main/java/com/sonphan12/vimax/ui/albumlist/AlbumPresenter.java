@@ -53,4 +53,15 @@ public class AlbumPresenter implements AlbumContract.Presenter {
     public void destroy() {
         disposable.dispose();
     }
+
+    @Override
+    public void onListScroll(int lastVisiblePosition, int listSize, int dx, int dy) {
+        if (lastVisiblePosition >= 10) view.showBackOnTopButton();
+        else view.hideBackOnTopButton();
+    }
+
+    @Override
+    public void onBtnBackOnTopClicked() {
+        view.scrollOnTop();
+    }
 }
