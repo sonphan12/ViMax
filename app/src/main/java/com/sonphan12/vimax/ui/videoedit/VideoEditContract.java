@@ -14,6 +14,7 @@ public interface VideoEditContract {
     interface Presenter extends BasePresenter<View> {
         void showVideoPreview();
         void onBtnRotateClicked(String videoUri, FFmpeg ffmpeg);
+        void onBtnReverseClicked(String videoUri, FFmpeg ffmpeg);
         void executeFfmpegCommand(String[] command, FFmpeg ffmpeg, String progressMessage);
     }
 }
