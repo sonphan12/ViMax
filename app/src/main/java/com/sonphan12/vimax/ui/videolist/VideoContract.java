@@ -2,6 +2,7 @@ package com.sonphan12.vimax.ui.videolist;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.RecyclerView;
 
 import com.sonphan12.vimax.data.model.Video;
 import com.sonphan12.vimax.ui.base.BaseFragmentView;
@@ -17,6 +18,9 @@ public interface VideoContract {
         void showVideos(List<Video> listVideo);
         void showProgressCircle();
         void hideProgressCircle();
+        void showBackOnTopButton();
+        void hideBackOnTopButton();
+        void scrollOnTop();
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -28,6 +32,8 @@ public interface VideoContract {
         void deleteCheckedVideos(List<Video> listVideo);
         void checkVideo(Video video);
         void onReceiveAction(Context context, Intent intent);
+        void onListScroll(int lastVisiblePosition, int listSize, int dx, int dy);
+        void onBtnBackOnTopClicked();
     }
 
     interface VideoItemListener {

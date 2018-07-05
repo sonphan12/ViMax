@@ -12,6 +12,20 @@
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/btnBackToTop"
+        android:padding="@dimen/text_padding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/back_on_top"
+        android:textColor="@color/colorWhiteSmoke"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        android:drawablePadding="3dp"
+        android:background="@drawable/round_corner_button"
+        android:drawableStart="@mipmap/ic_arrow_up_white_18dp"
+        android:visibility="gone"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/lvVideos"

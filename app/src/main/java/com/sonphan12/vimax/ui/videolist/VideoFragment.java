@@ -1,6 +1,8 @@
 package com.sonphan12.vimax.ui.videolist;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -39,11 +41,18 @@ import butterknife.OnClick;
  * A simple {@link Fragment} subclass.
  */
 public class VideoFragment extends BaseFragment implements VideoContract.View, VideoContract.VideoItemListener {
-    @BindView(R.id.loadingProgress) ProgressBar loadingProgress;
-    @BindView(R.id.lvVideos) RecyclerView lvVideos;
-    @BindView(R.id.llHidden) LinearLayout llHidden;
-    @BindView(R.id.btnDelete) Button btnDelete;
-    @BindView(R.id.btnSelectAll) Button btnSelectAll;
+    @BindView(R.id.loadingProgress)
+    ProgressBar loadingProgress;
+    @BindView(R.id.lvVideos)
+    RecyclerView lvVideos;
+    @BindView(R.id.llHidden)
+    LinearLayout llHidden;
+    @BindView(R.id.btnDelete)
+    Button btnDelete;
+    @BindView(R.id.btnSelectAll)
+    Button btnSelectAll;
+    @BindView(R.id.btnBackToTop)
+    Button btnBackToTop;
     VideoAdapter videoAdapter;
     @Inject
     VideoContract.Presenter presenter;
@@ -63,7 +72,7 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
 
         View v = inflater.inflate(R.layout.fragment_video, container, false);
 
-        ((ViMaxApplication)getActivity().getApplication()).createVideoListComponent().inject(this);
+        ((ViMaxApplication) getActivity().getApplication()).createVideoListComponent().inject(this);
 
         ButterKnife.bind(this, v);
 
@@ -87,6 +96,19 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
         };
 
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, intentFilter);
+
+        lvVideos.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                presenter.onListScroll(
+                        layoutManager.findLastVisibleItemPosition(),
+                        videoAdapter.getItemCount(),
+                        dx,
+                        dy
+                );
+            }
+        });
 
         // Inflate the layout for this fragment
         return v;
@@ -115,6 +137,38 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
     }
 
     @Override
+    public void showBackOnTopButton() {
+        if (btnBackToTop.getVisibility() == View.GONE) {
+            btnBackToTop.setVisibility(View.VISIBLE);
+            btnBackToTop.setAlpha(0.0f);
+            btnBackToTop
+                    .animate()
+                    .alpha(1.0f)
+                    .setListener(null);
+        }
+    }
+
+    @Override
+    public void hideBackOnTopButton() {
+        if (btnBackToTop.getVisibility() == View.VISIBLE) {
+            btnBackToTop.animate()
+                    .alpha(0.0f)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            btnBackToTop.setVisibility(View.GONE);
+                        }
+                    });
+        }
+    }
+
+    @Override
+    public void scrollOnTop() {
+        lvVideos.smoothScrollToPosition(0);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.destroy();
@@ -122,9 +176,9 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
     }
 
     public void onVideoItemClick(View v, int position) {
-            Intent intent = new Intent(getContext(), VideoEditActivity.class);
-            intent.putExtra(AppConstants.EXTRA_VIDEO_PATH, videoAdapter.getListVideo().get(position).getFileSrc());
-            getContext().startActivity(intent);
+        Intent intent = new Intent(getContext(), VideoEditActivity.class);
+        intent.putExtra(AppConstants.EXTRA_VIDEO_PATH, videoAdapter.getListVideo().get(position).getFileSrc());
+        getContext().startActivity(intent);
     }
 
 
@@ -138,7 +192,7 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
         presenter.returnToInitialState(videoAdapter);
     }
 
-    @OnClick({R.id.btnDelete, R.id.btnSelectAll})
+    @OnClick({R.id.btnDelete, R.id.btnSelectAll, R.id.btnBackToTop})
     public void onButtonClick(View v) {
         switch (v.getId()) {
             case R.id.btnDelete:
@@ -146,6 +200,9 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
                 break;
             case R.id.btnSelectAll:
                 presenter.setCheckAll(videoAdapter.getListVideo());
+                break;
+            case R.id.btnBackToTop:
+                presenter.onBtnBackOnTopClicked();
                 break;
         }
     }
@@ -163,7 +220,7 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ((ViMaxApplication)getActivity().getApplication()).releaseVideoListComponent();
+        ((ViMaxApplication) getActivity().getApplication()).releaseVideoListComponent();
     }
 
     @Override
@@ -171,4 +228,5 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
         Video video = videoAdapter.getListVideo().get(position);
         presenter.checkVideo(video);
     }
+
 }
