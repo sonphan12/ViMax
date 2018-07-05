@@ -98,4 +98,5 @@
     <string name="rotate">Rotate 90</string>
     <string name="delete">Delete</string>
     <string name="select_all">Select all</string>
+    <string name="reverse">Reverse</string>
 </resources>

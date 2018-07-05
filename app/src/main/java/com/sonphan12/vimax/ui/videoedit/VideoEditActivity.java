@@ -85,11 +85,14 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
         Toast.makeText(this, message, length).show();
     }
 
-    @OnClick({R.id.btnRotate})
+    @OnClick({R.id.btnRotate, R.id.btnReverse})
     public void btnClicked(View v) {
         switch (v.getId()) {
             case R.id.btnRotate:
                 presenter.onBtnRotateClicked(videoPath, ffmpeg);
+                break;
+            case R.id.btnReverse:
+                presenter.onBtnReverseClicked(videoPath, ffmpeg);
                 break;
         }
     }

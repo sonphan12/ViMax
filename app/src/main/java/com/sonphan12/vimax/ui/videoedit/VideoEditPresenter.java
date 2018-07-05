@@ -48,6 +48,23 @@ public class VideoEditPresenter implements Presenter {
     }
 
     @Override
+    public void onBtnReverseClicked(String videoUri, FFmpeg ffmpeg) {
+        File moviesDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_MOVIES);
+        File viMaxDir = new File(moviesDir.getAbsolutePath() + File.separator + AppConstants.FOLDER_NAME);
+        if (!viMaxDir.exists()) {
+            viMaxDir.mkdirs();
+        }
+        String inputPath = new File(videoUri).getAbsolutePath();
+        File output = new File(viMaxDir.getAbsolutePath(), String.valueOf(System.currentTimeMillis()) + ".mp4");
+        String outputPath = output.getAbsolutePath();
+        String[] reverseCommand = {"-y", "-i", inputPath, "-vf", "reverse", "-af", "areverse", "-preset", "ultrafast", outputPath};
+        executeFfmpegCommand(reverseCommand, ffmpeg, AppConstants.REVERSE_PROGRESS_MESSAGE);
+
+        newFile = output;
+    }
+
+    @Override
     public void executeFfmpegCommand(String[] command, FFmpeg ffmpeg, String progressMessage) {
         try {
             ffmpeg.execute(command, new FFmpegExecuteResponseHandler() {
@@ -64,7 +81,7 @@ public class VideoEditPresenter implements Presenter {
                 @Override
                 public void onFailure(String message) {
                     view.showToastMessage("ERROR", Toast.LENGTH_SHORT);
-                    Log.d("rotate_error", message);
+                    Log.d("execute_error", message);
                 }
 
                 @Override
