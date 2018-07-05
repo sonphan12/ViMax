@@ -99,4 +99,5 @@
     <string name="delete">Delete</string>
     <string name="select_all">Select all</string>
     <string name="reverse">Reverse</string>
+    <string name="back_on_top">Back on top</string>
 </resources>

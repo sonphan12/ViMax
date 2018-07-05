@@ -1,6 +1,8 @@
 package com.sonphan12.vimax.ui.albumlist;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.sonphan12.vimax.R;
@@ -31,6 +34,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 /**
@@ -39,6 +43,7 @@ import butterknife.ButterKnife;
 public class AlbumFragment extends BaseFragment implements AlbumContract.View {
     @BindView(R.id.loadingProgress) ProgressBar loadingProgress;
     @BindView(R.id.lvAlbums) RecyclerView lvAlbums;
+    @BindView(R.id.btnBackToTop) Button btnBackToTop;
     AlbumAdapter albumAdapter;
     @Inject
     AlbumContract.Presenter presenter;
@@ -79,6 +84,19 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(AppConstants.ACTION_UPDATE_DATA);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, intentFilter);
+
+        lvAlbums.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                presenter.onListScroll(
+                        layoutManager.findLastVisibleItemPosition(),
+                        albumAdapter.getItemCount(),
+                        dx,
+                        dy
+                );
+            }
+        });
 
         return v;
     }
@@ -149,8 +167,49 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
     }
 
     @Override
+    public void showBackOnTopButton() {
+        if (btnBackToTop.getVisibility() == View.GONE) {
+            btnBackToTop.setVisibility(View.VISIBLE);
+            btnBackToTop.setAlpha(0.0f);
+            btnBackToTop
+                    .animate()
+                    .alpha(1.0f)
+                    .setListener(null);
+        }
+    }
+
+    @Override
+    public void hideBackOnTopButton() {
+        if (btnBackToTop.getVisibility() == View.VISIBLE) {
+            btnBackToTop.animate()
+                    .alpha(0.0f)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            btnBackToTop.setVisibility(View.GONE);
+                        }
+                    });
+        }
+    }
+
+    @Override
+    public void scrollOnTop() {
+        lvAlbums.smoothScrollToPosition(0);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         ((ViMaxApplication)getActivity().getApplication()).releaseAlbumListComponent();
+    }
+
+    @OnClick ({R.id.btnBackToTop})
+    public void onButtonClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnBackToTop:
+                presenter.onBtnBackOnTopClicked();
+                break;
+        }
     }
 }

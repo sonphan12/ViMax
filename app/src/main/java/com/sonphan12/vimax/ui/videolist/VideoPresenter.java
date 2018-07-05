@@ -100,8 +100,6 @@ public class VideoPresenter implements VideoContract.Presenter {
                 numVideoToDelete++;
                 File file = new File(video.getFileSrc());
                 if (file.exists()) {
-//                    Uri uri = Uri.fromFile(file);
-//                    ((BaseFragment)view).getActivity().getContentResolver().delete(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null);
                     disposable.add(
                             offlineVideoRepository.deleteVideo(ctx, video.getId())
                             .compose(ApplyScheduler.applySchedulersCompletable())
@@ -134,6 +132,17 @@ public class VideoPresenter implements VideoContract.Presenter {
                 getVideos(context);
                 break;
         }
+    }
+
+    @Override
+    public void onListScroll(int lastVisiblePosition, int listSize, int dx, int dy) {
+        if (lastVisiblePosition >= 10) view.showBackOnTopButton();
+        else view.hideBackOnTopButton();
+    }
+
+    @Override
+    public void onBtnBackOnTopClicked() {
+        view.scrollOnTop();
     }
 
 
