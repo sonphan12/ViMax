@@ -32,14 +32,16 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.FolderViewHo
     private List<Album> listAlbum;
     boolean enableAllCheckbox;
     private Context ctx;
+    AlbumContract.AlbumItemListener albumItemListener;
 
     public AlbumAdapter() {
         super();
     }
-    public AlbumAdapter(Context ctx) {
+    public AlbumAdapter(Context ctx, AlbumContract.AlbumItemListener albumItemListener) {
         this.ctx = ctx;
         this.listAlbum = new ArrayList<>();
         enableAllCheckbox = false;
+        this.albumItemListener = albumItemListener;
     }
 
     @NonNull
@@ -63,6 +65,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.FolderViewHo
         }
 
         holder.chkSelect.setChecked(album.isChecked());
+        holder.chkSelect.setOnClickListener(v -> albumItemListener.onCheckClick(position));
     }
 
     @Override

@@ -30,5 +30,10 @@ public interface AlbumContract {
         void returnToInitialState(AlbumAdapter adapter);
         void setCheckAll(List<Album> listAlbum);
         void setUncheckAll(List<Album> listAlbum);
+        void checkAlbum(Album album);
+    }
+
+    interface AlbumItemListener {
+        void onCheckClick(int position);
     }
 }

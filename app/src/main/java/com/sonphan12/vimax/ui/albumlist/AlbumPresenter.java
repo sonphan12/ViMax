@@ -108,4 +108,9 @@ public class AlbumPresenter implements AlbumContract.Presenter {
         }
         view.showAlbums(listAlbum);
     }
+
+    @Override
+    public void checkAlbum(Album album) {
+        album.setChecked(!album.isChecked());
+    }
 }

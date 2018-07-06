@@ -226,5 +226,4 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
         Video video = videoAdapter.getListVideo().get(position);
         presenter.checkVideo(video);
     }
-
 }

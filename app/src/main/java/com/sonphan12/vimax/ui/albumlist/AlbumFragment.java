@@ -41,7 +41,7 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AlbumFragment extends BaseFragment implements AlbumContract.View {
+public class AlbumFragment extends BaseFragment implements AlbumContract.View, AlbumContract.AlbumItemListener {
     @BindView(R.id.loadingProgress) ProgressBar loadingProgress;
     @BindView(R.id.lvAlbums) RecyclerView lvAlbums;
     @BindView(R.id.btnBackToTop) Button btnBackToTop;
@@ -68,7 +68,7 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
         ((ViMaxApplication)getActivity().getApplication()).createAlbumListComponent().inject(this);
 
         ButterKnife.bind(this, v);
-        albumAdapter = new AlbumAdapter(getContext());
+        albumAdapter = new AlbumAdapter(getContext(), this);
         ItemClickSupport.addTo(lvAlbums).setOnItemClickListener((recyclerView, position, v1) -> onAlbumItemClick(v1, position));
         ItemClickSupport.addTo(lvAlbums).setOnItemLongClickListener((recyclerView, position, v12) -> onAlbumItemLongClick(v12, position));
         lvAlbums.setLayoutManager(layoutManager);
@@ -222,5 +222,11 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
                 presenter.onBtnBackOnTopClicked();
                 break;
         }
+    }
+
+    @Override
+    public void onCheckClick(int position) {
+        Album album = albumAdapter.getListAlbum().get(position);
+        presenter.checkAlbum(album);
     }
 }
