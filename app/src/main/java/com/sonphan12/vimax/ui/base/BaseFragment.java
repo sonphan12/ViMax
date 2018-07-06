@@ -3,7 +3,7 @@ package com.sonphan12.vimax.ui.base;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
-public class BaseFragment extends Fragment implements BaseView, OnBackPressed {
+public class BaseFragment extends Fragment implements BaseView {
     private boolean isInitialState;
     public BaseFragment() {
         super();
@@ -23,6 +23,4 @@ public class BaseFragment extends Fragment implements BaseView, OnBackPressed {
         Toast.makeText(getContext(), message, length).show();
     }
 
-    @Override
-    public void onBackPressed() { }
 }

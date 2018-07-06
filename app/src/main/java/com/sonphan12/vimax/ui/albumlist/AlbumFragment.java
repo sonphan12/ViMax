@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.sonphan12.vimax.R;
@@ -44,6 +45,8 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
     @BindView(R.id.loadingProgress) ProgressBar loadingProgress;
     @BindView(R.id.lvAlbums) RecyclerView lvAlbums;
     @BindView(R.id.btnBackToTop) Button btnBackToTop;
+    @BindView(R.id.llHidden) LinearLayout llHidden;
+
     AlbumAdapter albumAdapter;
     @Inject
     AlbumContract.Presenter presenter;
@@ -121,8 +124,7 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
     }
 
     private boolean onAlbumItemLongClick(View v, int position) {
-        // TODO: Impl On Item Long Click
-        return false;
+        return presenter.enableAllCheckBox(albumAdapter, position);
     }
 
     @Override
@@ -158,12 +160,12 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
 
     @Override
     public void showHiddenLayout() {
-        // TODO: Impl show hidden layout
+        llHidden.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideHiddenLayout() {
-        // TODO: Impl hide hidden layout
+        llHidden.setVisibility(View.GONE);
     }
 
     @Override
@@ -204,9 +206,18 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
         ((ViMaxApplication)getActivity().getApplication()).releaseAlbumListComponent();
     }
 
-    @OnClick ({R.id.btnBackToTop})
+    @OnClick ({R.id.btnDelete, R.id.btnSelectAll, R.id.btnClose, R.id.btnBackToTop})
     public void onButtonClick(View v) {
         switch (v.getId()) {
+            case R.id.btnDelete:
+                // TODO: Impl delete
+                break;
+            case R.id.btnSelectAll:
+                // TODO: Impl Select all
+                break;
+            case R.id.btnClose:
+                presenter.returnToInitialState(albumAdapter);
+                break;
             case R.id.btnBackToTop:
                 presenter.onBtnBackOnTopClicked();
                 break;

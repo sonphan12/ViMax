@@ -100,4 +100,5 @@
     <string name="select_all">Select all</string>
     <string name="reverse">Reverse</string>
     <string name="back_on_top">Back on top</string>
+    <string name="close">Close</string>
 </resources>

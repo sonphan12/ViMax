@@ -118,14 +118,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        BaseFragment currentFragment = (BaseFragment) adapter.getItem(mainPager.getCurrentItem());
-        if (currentFragment != null) {
-            if (currentFragment.isInitialState()) super.onBackPressed();
-            currentFragment.onBackPressed();
-        } else {
-            super.onBackPressed();
-        }
-    }
 }

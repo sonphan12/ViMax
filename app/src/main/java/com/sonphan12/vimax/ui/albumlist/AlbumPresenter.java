@@ -6,6 +6,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.sonphan12.vimax.data.OfflineVideoAlbumRepository;
+import com.sonphan12.vimax.data.model.Album;
+import com.sonphan12.vimax.data.model.Video;
+import com.sonphan12.vimax.ui.base.BaseFragment;
+import com.sonphan12.vimax.ui.videolist.VideoAdapter;
 import com.sonphan12.vimax.utils.AppConstants;
 import com.sonphan12.vimax.utils.ApplyScheduler;
 
@@ -63,5 +67,27 @@ public class AlbumPresenter implements AlbumContract.Presenter {
     @Override
     public void onBtnBackOnTopClicked() {
         view.scrollOnTop();
+    }
+
+    @Override
+    public boolean enableAllCheckBox(AlbumAdapter adapter, int position) {
+        Album album = adapter.getListAlbum().get(position);
+        adapter.setEnableAllCheckbox(true);
+        album.setChecked(true);
+        adapter.notifyDataSetChanged();
+        view.showHiddenLayout();
+        ((BaseFragment)view).setInitialState(false);
+        return false;
+    }
+
+    @Override
+    public void returnToInitialState(AlbumAdapter adapter) {
+        for (Album album : adapter.getListAlbum()) {
+            album.setChecked(false);
+        }
+        adapter.setEnableAllCheckbox(false);
+        adapter.notifyDataSetChanged();
+        view.hideHiddenLayout();
+        ((BaseFragment) view).setInitialState(true);
     }
 }

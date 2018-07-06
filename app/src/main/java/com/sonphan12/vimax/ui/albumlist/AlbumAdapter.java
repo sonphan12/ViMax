@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.sonphan12.vimax.R;
@@ -29,6 +30,7 @@ import butterknife.ButterKnife;
 
 public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.FolderViewHolder> {
     private List<Album> listAlbum;
+    boolean enableAllCheckbox;
     private Context ctx;
 
     public AlbumAdapter() {
@@ -37,6 +39,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.FolderViewHo
     public AlbumAdapter(Context ctx) {
         this.ctx = ctx;
         this.listAlbum = new ArrayList<>();
+        enableAllCheckbox = false;
     }
 
     @NonNull
@@ -52,6 +55,14 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.FolderViewHo
         Album album = listAlbum.get(position);
         holder.txtAlbumName.setText(album.getName());
         holder.txtNumVideo.setText(String.valueOf(album.getNumVideos()));
+
+        if (this.enableAllCheckbox) {
+            holder.chkSelect.setVisibility(View.VISIBLE);
+        } else {
+            holder.chkSelect.setVisibility(View.INVISIBLE);
+        }
+
+        holder.chkSelect.setChecked(album.isChecked());
     }
 
     @Override
@@ -63,6 +74,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.FolderViewHo
         @BindView(R.id.txtAlbumName) TextView txtAlbumName;
         @BindView(R.id.txtNumVideo) TextView txtNumVideo;
         @BindView(R.id.cardViewAlbum) CardView cardViewAlbum;
+        @BindView(R.id.chkSelect) CheckBox chkSelect;
 
         public FolderViewHolder(View itemView) {
             super(itemView);
@@ -76,5 +88,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.FolderViewHo
 
     public List<Album> getListAlbum() {
         return listAlbum;
+    }
+
+    public void setEnableAllCheckbox(boolean enableAllCheckbox) {
+        this.enableAllCheckbox = enableAllCheckbox;
     }
 }
