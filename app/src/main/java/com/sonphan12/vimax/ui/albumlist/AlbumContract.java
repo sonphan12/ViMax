@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import com.sonphan12.vimax.data.model.Album;
 import com.sonphan12.vimax.ui.base.BaseFragmentView;
 import com.sonphan12.vimax.ui.base.BasePresenter;
+import com.sonphan12.vimax.ui.videolist.VideoAdapter;
 
 import java.util.List;
 
@@ -25,5 +26,15 @@ public interface AlbumContract {
         void onReceiveAction(Context ctx, Intent intent);
         void onListScroll(int lastVisiblePosition, int listSize, int dx, int dy);
         void onBtnBackOnTopClicked();
+        boolean enableAllCheckBox(AlbumAdapter adapter, int position);
+        void returnToInitialState(AlbumAdapter adapter);
+        void setCheckAll(List<Album> listAlbum);
+        void setUncheckAll(List<Album> listAlbum);
+        void checkAlbum(Album album);
+        void deleteCheckedAlbums(List<Album> listAlbum);
+    }
+
+    interface AlbumItemListener {
+        void onCheckClick(int position);
     }
 }

@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.sonphan12.vimax.R;
@@ -40,10 +41,12 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AlbumFragment extends BaseFragment implements AlbumContract.View {
+public class AlbumFragment extends BaseFragment implements AlbumContract.View, AlbumContract.AlbumItemListener {
     @BindView(R.id.loadingProgress) ProgressBar loadingProgress;
     @BindView(R.id.lvAlbums) RecyclerView lvAlbums;
     @BindView(R.id.btnBackToTop) Button btnBackToTop;
+    @BindView(R.id.llHidden) LinearLayout llHidden;
+
     AlbumAdapter albumAdapter;
     @Inject
     AlbumContract.Presenter presenter;
@@ -65,7 +68,7 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
         ((ViMaxApplication)getActivity().getApplication()).createAlbumListComponent().inject(this);
 
         ButterKnife.bind(this, v);
-        albumAdapter = new AlbumAdapter(getContext());
+        albumAdapter = new AlbumAdapter(getContext(), this);
         ItemClickSupport.addTo(lvAlbums).setOnItemClickListener((recyclerView, position, v1) -> onAlbumItemClick(v1, position));
         ItemClickSupport.addTo(lvAlbums).setOnItemLongClickListener((recyclerView, position, v12) -> onAlbumItemLongClick(v12, position));
         lvAlbums.setLayoutManager(layoutManager);
@@ -121,8 +124,7 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
     }
 
     private boolean onAlbumItemLongClick(View v, int position) {
-        // TODO: Impl On Item Long Click
-        return false;
+        return presenter.enableAllCheckBox(albumAdapter, position);
     }
 
     @Override
@@ -158,12 +160,12 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
 
     @Override
     public void showHiddenLayout() {
-        // TODO: Impl show hidden layout
+        llHidden.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideHiddenLayout() {
-        // TODO: Impl hide hidden layout
+        llHidden.setVisibility(View.GONE);
     }
 
     @Override
@@ -204,12 +206,27 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
         ((ViMaxApplication)getActivity().getApplication()).releaseAlbumListComponent();
     }
 
-    @OnClick ({R.id.btnBackToTop})
+    @OnClick ({R.id.btnDelete, R.id.btnSelectAll, R.id.btnClose, R.id.btnBackToTop})
     public void onButtonClick(View v) {
         switch (v.getId()) {
+            case R.id.btnDelete:
+                presenter.deleteCheckedAlbums(albumAdapter.getListAlbum());
+                break;
+            case R.id.btnSelectAll:
+                presenter.setCheckAll(albumAdapter.getListAlbum());
+                break;
+            case R.id.btnClose:
+                presenter.returnToInitialState(albumAdapter);
+                break;
             case R.id.btnBackToTop:
                 presenter.onBtnBackOnTopClicked();
                 break;
         }
+    }
+
+    @Override
+    public void onCheckClick(int position) {
+        Album album = albumAdapter.getListAlbum().get(position);
+        presenter.checkAlbum(album);
     }
 }

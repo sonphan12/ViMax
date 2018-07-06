@@ -186,13 +186,7 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
         return presenter.enableAllCheckBox(videoAdapter, position);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        presenter.returnToInitialState(videoAdapter);
-    }
-
-    @OnClick({R.id.btnDelete, R.id.btnSelectAll, R.id.btnBackToTop})
+    @OnClick({R.id.btnDelete, R.id.btnSelectAll, R.id.btnBackToTop, R.id.btnClose})
     public void onButtonClick(View v) {
         switch (v.getId()) {
             case R.id.btnDelete:
@@ -200,6 +194,9 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
                 break;
             case R.id.btnSelectAll:
                 presenter.setCheckAll(videoAdapter.getListVideo());
+                break;
+            case R.id.btnClose:
+                presenter.returnToInitialState(videoAdapter);
                 break;
             case R.id.btnBackToTop:
                 presenter.onBtnBackOnTopClicked();
@@ -229,5 +226,4 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
         Video video = videoAdapter.getListVideo().get(position);
         presenter.checkVideo(video);
     }
-
 }
