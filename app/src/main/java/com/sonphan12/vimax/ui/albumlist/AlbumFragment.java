@@ -213,7 +213,7 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View {
                 // TODO: Impl delete
                 break;
             case R.id.btnSelectAll:
-                // TODO: Impl Select all
+                presenter.setCheckAll(albumAdapter.getListAlbum());
                 break;
             case R.id.btnClose:
                 presenter.returnToInitialState(albumAdapter);

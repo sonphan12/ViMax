@@ -28,5 +28,7 @@ public interface AlbumContract {
         void onBtnBackOnTopClicked();
         boolean enableAllCheckBox(AlbumAdapter adapter, int position);
         void returnToInitialState(AlbumAdapter adapter);
+        void setCheckAll(List<Album> listAlbum);
+        void setUncheckAll(List<Album> listAlbum);
     }
 }

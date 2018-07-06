@@ -13,6 +13,8 @@ import com.sonphan12.vimax.ui.videolist.VideoAdapter;
 import com.sonphan12.vimax.utils.AppConstants;
 import com.sonphan12.vimax.utils.ApplyScheduler;
 
+import java.util.List;
+
 import io.reactivex.disposables.CompositeDisposable;
 
 public class AlbumPresenter implements AlbumContract.Presenter {
@@ -89,5 +91,21 @@ public class AlbumPresenter implements AlbumContract.Presenter {
         adapter.notifyDataSetChanged();
         view.hideHiddenLayout();
         ((BaseFragment) view).setInitialState(true);
+    }
+
+    @Override
+    public void setCheckAll(List<Album> listAlbum) {
+        for (Album album : listAlbum) {
+            album.setChecked(true);
+        }
+        view.showAlbums(listAlbum);
+    }
+
+    @Override
+    public void setUncheckAll(List<Album> listAlbum) {
+        for (Album album : listAlbum) {
+            album.setChecked(false);
+        }
+        view.showAlbums(listAlbum);
     }
 }
