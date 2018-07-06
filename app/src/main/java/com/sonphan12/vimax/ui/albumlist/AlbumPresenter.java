@@ -2,10 +2,12 @@ package com.sonphan12.vimax.ui.albumlist;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.sonphan12.vimax.data.OfflineVideoAlbumRepository;
+import com.sonphan12.vimax.data.OfflineVideoRepository;
 import com.sonphan12.vimax.data.model.Album;
 import com.sonphan12.vimax.data.model.Video;
 import com.sonphan12.vimax.ui.base.BaseFragment;
@@ -20,11 +22,14 @@ import io.reactivex.disposables.CompositeDisposable;
 public class AlbumPresenter implements AlbumContract.Presenter {
     private AlbumContract.View view;
     private OfflineVideoAlbumRepository offlineVideoAlbumRepository;
+    private OfflineVideoRepository offlineVideoRepository;
     private CompositeDisposable disposable;
 
     public AlbumPresenter(OfflineVideoAlbumRepository offlineVideoAlbumRepository,
+                          OfflineVideoRepository offlineVideoRepository,
                           CompositeDisposable disposable) {
         this.offlineVideoAlbumRepository = offlineVideoAlbumRepository;
+        this.offlineVideoRepository = offlineVideoRepository;
         this.disposable = disposable;
     }
 
@@ -78,7 +83,7 @@ public class AlbumPresenter implements AlbumContract.Presenter {
         album.setChecked(true);
         adapter.notifyDataSetChanged();
         view.showHiddenLayout();
-        ((BaseFragment)view).setInitialState(false);
+        ((BaseFragment) view).setInitialState(false);
         return false;
     }
 
@@ -112,5 +117,24 @@ public class AlbumPresenter implements AlbumContract.Presenter {
     @Override
     public void checkAlbum(Album album) {
         album.setChecked(!album.isChecked());
+    }
+
+    @Override
+    public void deleteCheckedAlbums(List<Album> listAlbum) {
+        for (Album album : listAlbum) {
+            if (album.isChecked()) {
+                disposable.add(offlineVideoAlbumRepository.deleteAlbum(
+                        ((BaseFragment) view).getContext(),
+                        album,
+                        offlineVideoRepository
+                )
+                        .compose(ApplyScheduler.applySchedulersCompletable())
+                        .subscribe(() -> {
+                            view.showToastMessage("Deleted!", Toast.LENGTH_SHORT);
+                            Intent intent = new Intent(AppConstants.ACTION_UPDATE_DATA);
+                            LocalBroadcastManager.getInstance(((BaseFragment) view).getContext()).sendBroadcast(intent);
+                        }, Throwable::printStackTrace));
+            }
+        }
     }
 }

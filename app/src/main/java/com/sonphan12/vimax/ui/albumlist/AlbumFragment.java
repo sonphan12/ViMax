@@ -210,7 +210,7 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View, A
     public void onButtonClick(View v) {
         switch (v.getId()) {
             case R.id.btnDelete:
-                // TODO: Impl delete
+                presenter.deleteCheckedAlbums(albumAdapter.getListAlbum());
                 break;
             case R.id.btnSelectAll:
                 presenter.setCheckAll(albumAdapter.getListAlbum());
