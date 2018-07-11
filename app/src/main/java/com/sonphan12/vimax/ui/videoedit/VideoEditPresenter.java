@@ -30,12 +30,7 @@ public class VideoEditPresenter implements Presenter {
 
     @Override
     public void onBtnRotateClicked(String videoUri, FFmpeg ffmpeg) {
-        File moviesDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_MOVIES);
-        File viMaxDir = new File(moviesDir.getAbsolutePath() + File.separator + AppConstants.FOLDER_NAME);
-        if (!viMaxDir.exists()) {
-            viMaxDir.mkdirs();
-        }
+        File viMaxDir = createVimaxDirIfNotExist();
         String inputPath = new File(videoUri).getAbsolutePath();
         File output = new File(viMaxDir.getAbsolutePath(), String.valueOf(System.currentTimeMillis()) + ".mp4");
         String outputPath = output.getAbsolutePath();
@@ -44,17 +39,11 @@ public class VideoEditPresenter implements Presenter {
         executeFfmpegCommand(rotateCommand, ffmpeg, AppConstants.ROTATE_PROGRESS_MESSAGE);
 
         newFile = output;
-
     }
 
     @Override
     public void onBtnReverseClicked(String videoUri, FFmpeg ffmpeg) {
-        File moviesDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_MOVIES);
-        File viMaxDir = new File(moviesDir.getAbsolutePath() + File.separator + AppConstants.FOLDER_NAME);
-        if (!viMaxDir.exists()) {
-            viMaxDir.mkdirs();
-        }
+        File viMaxDir = createVimaxDirIfNotExist();
         String inputPath = new File(videoUri).getAbsolutePath();
         File output = new File(viMaxDir.getAbsolutePath(), String.valueOf(System.currentTimeMillis()) + ".mp4");
         String outputPath = output.getAbsolutePath();
@@ -122,5 +111,16 @@ public class VideoEditPresenter implements Presenter {
     @Override
     public void destroy() {
 
+    }
+
+    private File createVimaxDirIfNotExist() {
+        File moviesDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_MOVIES);
+        File viMaxDir = new File(moviesDir.getAbsolutePath() + File.separator + AppConstants.FOLDER_NAME);
+        if (!viMaxDir.exists()) {
+            viMaxDir.mkdirs();
+        }
+
+        return viMaxDir;
     }
 }
