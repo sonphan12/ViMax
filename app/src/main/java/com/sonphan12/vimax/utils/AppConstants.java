@@ -14,5 +14,6 @@ public interface AppConstants {
     String FOLDER_NAME = "ViMax";
     String ROTATE_PROGRESS_MESSAGE = "Rotating video, please wait...";
     String REVERSE_PROGRESS_MESSAGE = "Reversing video, please wait...";
+    String CHANGE_SPEED_MESSAGE = "Changing speed of the video, please wait...";
     String ACTION_UPDATE_DATA = "action_update_data";
 }

@@ -110,8 +110,18 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
             public void afterTextChanged(Editable s) {
                 try {
                     double dSpeed = Double.parseDouble(s.toString());
-                    sbSpeed.setProgress((int)((dSpeed - 0.5) * 100 / 1.5));
+                    if (dSpeed < 0.5) {
+                        dSpeed = 0.5;
+                        edtSpeed.setText(String.valueOf(dSpeed));
+                        return;
+                    } else if (dSpeed > 2) {
+                        dSpeed = 2.0;
+                        edtSpeed.setText(String.valueOf(dSpeed));
+                        return;
+                    }
+                    sbSpeed.setProgress((int)(dSpeed * 100 / 2));
                 } catch (Exception e) {
+                    edtSpeed.setText("0.5");
                     Log.d(this.getClass().getSimpleName(), e.toString());
                 }
             }
@@ -121,7 +131,11 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
-                    double dSpeed = ((double) progress) / 100 * 1.5 + 0.5;
+                    if (progress < seekBar.getMax() / 4) {
+                        seekBar.setProgress(seekBar.getMax() / 4);
+                        return;
+                    }
+                    double dSpeed = ((double) progress) / 100 * 2;
                     String sSpeed = String.valueOf(((double) Math.round(dSpeed * 100)) / 100);
                     edtSpeed.removeTextChangedListener(textWatcher);
                     edtSpeed.setText(sSpeed);

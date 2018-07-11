@@ -60,7 +60,21 @@ public class VideoEditPresenter implements Presenter {
 
     @Override
     public void changeVideoSpeed(String videoUri, FFmpeg ffmpeg, double speed) {
-        // TODO: Impl change video speed
+        File viMaxDir = createVimaxDirIfNotExist();
+        String inputPath = new File(videoUri).getAbsolutePath();
+        File output = new File(viMaxDir.getAbsolutePath(), String.valueOf(System.currentTimeMillis()) + ".mp4");
+        String outputPath = output.getAbsolutePath();
+
+        if (speed > 2) speed = 2;
+        else if (speed < 0.5) speed = 0.5;
+
+        String speedVideo = String.valueOf(1 / speed);
+        String speedAudio = String.valueOf(speed);
+        String[] changeSpeedCommand = {"-y", "-i", inputPath, "-filter_complex", "[0:v]setpts=" + speedVideo + "*PTS[v];[0:a]atempo=" + speedAudio + "[a]"
+                , "-map", "[v]", "-map", "[a]", "-preset", "ultrafast", outputPath};
+        executeFfmpegCommand(changeSpeedCommand, ffmpeg, AppConstants.CHANGE_SPEED_MESSAGE);
+
+        newFile = output;
     }
 
     @Override
@@ -92,9 +106,9 @@ public class VideoEditPresenter implements Presenter {
                 public void onFinish() {
                     view.showToastMessage("Finish!", Toast.LENGTH_SHORT);
                     view.cancelProgressDialog();
-                    ((Activity)view).sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(newFile)));
+                    ((Activity) view).sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(newFile)));
                     // Show new video preview
-                    ((VideoEditActivity)view).videoPath = Uri.fromFile(newFile).toString();
+                    ((VideoEditActivity) view).videoPath = Uri.fromFile(newFile).toString();
                     view.showVideoPreview();
                 }
             });
