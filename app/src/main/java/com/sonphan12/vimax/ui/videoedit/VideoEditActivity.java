@@ -1,11 +1,19 @@
 package com.sonphan12.vimax.ui.videoedit;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.MediaController;
+import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -81,11 +89,93 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
     }
 
     @Override
+    public void createAndShowChangeSpeedDiaglog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.change_speed));
+        View view = LayoutInflater.from(this).inflate(R.layout.changespeed_dialog, null);
+        builder.setView(view);
+
+        EditText edtSpeed = view.findViewById(R.id.edtSpeed);
+        SeekBar sbSpeed = view.findViewById(R.id.sbSpeed);
+
+        // edtSpeed change dynamically with the progress bar
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    double dSpeed = Double.parseDouble(s.toString());
+                    if (dSpeed < 0.5) {
+                        dSpeed = 0.5;
+                        edtSpeed.setText(String.valueOf(dSpeed));
+                        return;
+                    } else if (dSpeed > 2) {
+                        dSpeed = 2.0;
+                        edtSpeed.setText(String.valueOf(dSpeed));
+                        return;
+                    }
+                    sbSpeed.setProgress((int)(dSpeed * 100 / 2));
+                } catch (Exception e) {
+                    edtSpeed.setText("0.5");
+                    Log.d(this.getClass().getSimpleName(), e.toString());
+                }
+            }
+        };
+
+        sbSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    if (progress < seekBar.getMax() / 4) {
+                        seekBar.setProgress(seekBar.getMax() / 4);
+                        return;
+                    }
+                    double dSpeed = ((double) progress) / 100 * 2;
+                    String sSpeed = String.valueOf(((double) Math.round(dSpeed * 100)) / 100);
+                    edtSpeed.removeTextChangedListener(textWatcher);
+                    edtSpeed.setText(sSpeed);
+                    edtSpeed.addTextChangedListener(textWatcher);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
+
+        edtSpeed.addTextChangedListener(textWatcher);
+
+        builder.setPositiveButton(R.string.OK, (dialog, which) -> {
+            String sSpeed = edtSpeed.getText().toString();
+            double dSpeed;
+            try {
+                dSpeed = Double.parseDouble(sSpeed);
+                presenter.changeVideoSpeed(videoPath, ffmpeg, dSpeed);
+            } catch (Exception e) {
+                Log.d(this.getClass().getSimpleName(), e.toString());
+            }
+        });
+
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+            // DO NOTHING
+        });
+
+        builder.show();
+    }
+
+    @Override
     public void showToastMessage(String message, int length) {
         Toast.makeText(this, message, length).show();
     }
 
-    @OnClick({R.id.btnRotate, R.id.btnReverse})
+    @OnClick({R.id.btnRotate, R.id.btnReverse, R.id.btnChangeSpeed})
     public void btnClicked(View v) {
         switch (v.getId()) {
             case R.id.btnRotate:
@@ -93,6 +183,9 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
                 break;
             case R.id.btnReverse:
                 presenter.onBtnReverseClicked(videoPath, ffmpeg);
+                break;
+            case R.id.btnChangeSpeed:
+                presenter.onBtnChangeSpeedClicked(videoPath, ffmpeg);
                 break;
         }
     }

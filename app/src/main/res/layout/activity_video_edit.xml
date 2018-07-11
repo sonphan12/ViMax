@@ -30,22 +30,37 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/btnRotate"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:drawableStart="@mipmap/ic_rotate_right_grey600_18dp"
-            android:text="@string/rotate"/>
+            android:text="@string/rotate"
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/btnReverse"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:drawableStart="@mipmap/ic_ray_end_arrow_grey600_18dp"
-            android:text="@string/reverse"/>
+            android:text="@string/reverse"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btnChangeSpeed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableStart="@mipmap/ic_clock_fast_grey600_18dp"
+            android:text="@string/change_speed"
+            android:layout_weight="1"/>
     </LinearLayout>
 
 </LinearLayout>
