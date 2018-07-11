@@ -65,6 +65,12 @@ public class VideoEditPresenter implements Presenter {
     }
 
     @Override
+    public void onBtnChangeSpeedClicked(String videoUri, FFmpeg fFmpeg) {
+        // TODO: Impl on btn change speed clicked handling
+        view.createAndShowChangeSpeedDiaglog();
+    }
+
+    @Override
     public void executeFfmpegCommand(String[] command, FFmpeg ffmpeg, String progressMessage) {
         try {
             ffmpeg.execute(command, new FFmpegExecuteResponseHandler() {

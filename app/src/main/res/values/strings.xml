@@ -101,4 +101,9 @@
     <string name="reverse">Reverse</string>
     <string name="back_on_top">Back on top</string>
     <string name="close">Close</string>
+    <string name="change_speed">Change speed</string>
+    <string name="speed_x">Speed x</string>
+    <string name="three_dot">…</string>
+    <string name="cancel">Cancel</string>
+    <string name="OK">OK</string>
 </resources>

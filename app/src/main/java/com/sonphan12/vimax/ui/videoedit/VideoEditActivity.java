@@ -1,9 +1,12 @@
 package com.sonphan12.vimax.ui.videoedit;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.MediaController;
 import android.widget.Toast;
@@ -81,11 +84,29 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
     }
 
     @Override
+    public void createAndShowChangeSpeedDiaglog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.change_speed));
+        View view = LayoutInflater.from(this).inflate(R.layout.changespeed_dialog, null);
+        builder.setView(view);
+
+        builder.setPositiveButton(R.string.OK, (dialog, which) -> {
+
+        });
+
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> {
+            // DO NOTHING
+        });
+
+        builder.show();
+    }
+
+    @Override
     public void showToastMessage(String message, int length) {
         Toast.makeText(this, message, length).show();
     }
 
-    @OnClick({R.id.btnRotate, R.id.btnReverse})
+    @OnClick({R.id.btnRotate, R.id.btnReverse, R.id.btnChangeSpeed})
     public void btnClicked(View v) {
         switch (v.getId()) {
             case R.id.btnRotate:
@@ -93,6 +114,9 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
                 break;
             case R.id.btnReverse:
                 presenter.onBtnReverseClicked(videoPath, ffmpeg);
+                break;
+            case R.id.btnChangeSpeed:
+                presenter.onBtnChangeSpeedClicked(videoPath, ffmpeg);
                 break;
         }
     }
