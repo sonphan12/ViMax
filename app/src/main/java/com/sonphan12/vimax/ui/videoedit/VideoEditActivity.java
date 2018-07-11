@@ -6,9 +6,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.MediaController;
+import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -90,8 +95,58 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
         View view = LayoutInflater.from(this).inflate(R.layout.changespeed_dialog, null);
         builder.setView(view);
 
-        builder.setPositiveButton(R.string.OK, (dialog, which) -> {
+        EditText edtSpeed = view.findViewById(R.id.edtSpeed);
+        SeekBar sbSpeed = view.findViewById(R.id.sbSpeed);
 
+        // edtSpeed change dynamically with the progress bar
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    double dSpeed = Double.parseDouble(s.toString());
+                    sbSpeed.setProgress((int)((dSpeed - 0.5) * 100 / 1.5));
+                } catch (Exception e) {
+                    Log.d(this.getClass().getSimpleName(), e.toString());
+                }
+            }
+        };
+
+        sbSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    double dSpeed = ((double) progress) / 100 * 1.5 + 0.5;
+                    String sSpeed = String.valueOf(((double) Math.round(dSpeed * 100)) / 100);
+                    edtSpeed.removeTextChangedListener(textWatcher);
+                    edtSpeed.setText(sSpeed);
+                    edtSpeed.addTextChangedListener(textWatcher);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
+
+        edtSpeed.addTextChangedListener(textWatcher);
+
+        builder.setPositiveButton(R.string.OK, (dialog, which) -> {
+            String sSpeed = edtSpeed.getText().toString();
+            double dSpeed;
+            try {
+                dSpeed = Double.parseDouble(sSpeed);
+                presenter.changeVideoSpeed(videoPath, ffmpeg, dSpeed);
+            } catch (Exception e) {
+                Log.d(this.getClass().getSimpleName(), e.toString());
+            }
         });
 
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> {

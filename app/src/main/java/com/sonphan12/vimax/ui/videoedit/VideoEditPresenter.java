@@ -65,9 +65,13 @@ public class VideoEditPresenter implements Presenter {
     }
 
     @Override
-    public void onBtnChangeSpeedClicked(String videoUri, FFmpeg fFmpeg) {
-        // TODO: Impl on btn change speed clicked handling
+    public void onBtnChangeSpeedClicked(String videoUri, FFmpeg ffmpeg) {
         view.createAndShowChangeSpeedDiaglog();
+    }
+
+    @Override
+    public void changeVideoSpeed(String videoUri, FFmpeg ffmpeg, double speed) {
+        // TODO: Impl change video speed
     }
 
     @Override

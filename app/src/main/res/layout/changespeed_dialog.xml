@@ -18,7 +18,8 @@
             android:id="@+id/edtSpeed"
             android:layout_width="80dp"
             android:layout_height="match_parent"
-            android:hint="@string/three_dot" />
+            android:hint="@string/three_dot"
+            android:inputType="numberDecimal"/>
     </LinearLayout>
 
     <SeekBar
