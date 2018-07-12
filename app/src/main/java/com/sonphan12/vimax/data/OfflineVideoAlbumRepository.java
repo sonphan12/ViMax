@@ -14,7 +14,6 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.functions.Function;
 
 public class OfflineVideoAlbumRepository{
     public Observable<List<Album>> loadAll(Context ctx) {

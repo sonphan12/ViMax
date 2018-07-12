@@ -2,12 +2,10 @@ package com.sonphan12.vimax.ui.videolist;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
 
 import com.sonphan12.vimax.data.model.Video;
 import com.sonphan12.vimax.ui.base.BaseFragmentView;
 import com.sonphan12.vimax.ui.base.BasePresenter;
-import com.sonphan12.vimax.ui.base.BaseView;
 
 import java.util.List;
 

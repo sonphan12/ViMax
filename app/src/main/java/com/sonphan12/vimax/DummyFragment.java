@@ -5,15 +5,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.sonphan12.vimax.ui.albumlist.AlbumFragment;
 import com.sonphan12.vimax.ui.base.BaseFragment;
-import com.sonphan12.vimax.ui.videolist.VideoFragment;
-import com.sonphan12.vimax.utils.AppConstants;
 
 
 /**

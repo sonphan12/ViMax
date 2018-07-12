@@ -1,7 +1,6 @@
 package com.sonphan12.vimax.utils;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -9,7 +8,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.sonphan12.vimax.ui.MainActivity;
-import com.sonphan12.vimax.ui.SplashActivity;
 
 import java.lang.ref.WeakReference;
 

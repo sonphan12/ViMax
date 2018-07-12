@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;

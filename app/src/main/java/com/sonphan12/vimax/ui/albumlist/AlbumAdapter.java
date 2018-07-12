@@ -1,13 +1,7 @@
 package com.sonphan12.vimax.ui.albumlist;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,10 +12,6 @@ import android.widget.TextView;
 
 import com.sonphan12.vimax.R;
 import com.sonphan12.vimax.data.model.Album;
-import com.sonphan12.vimax.ui.MainActivity;
-import com.sonphan12.vimax.ui.videolist.VideoFragment;
-import com.sonphan12.vimax.utils.AppConstants;
-
 import java.util.ArrayList;
 import java.util.List;
 

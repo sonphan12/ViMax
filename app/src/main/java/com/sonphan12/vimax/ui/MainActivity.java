@@ -15,8 +15,6 @@ import android.view.MenuItem;
 
 import com.sonphan12.vimax.DummyFragment;
 import com.sonphan12.vimax.R;
-import com.sonphan12.vimax.ui.albumlist.AlbumFragment;
-import com.sonphan12.vimax.ui.base.BaseFragment;
 import com.sonphan12.vimax.ui.videolist.VideoFragment;
 
 import java.util.ArrayList;

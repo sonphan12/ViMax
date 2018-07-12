@@ -8,13 +8,10 @@ import android.provider.MediaStore;
 import com.sonphan12.vimax.data.model.Video;
 import com.sonphan12.vimax.utils.TimeConversion;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Completable;
-import io.reactivex.CompletableEmitter;
-import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.Observable;
 
 public class OfflineVideoRepository {
