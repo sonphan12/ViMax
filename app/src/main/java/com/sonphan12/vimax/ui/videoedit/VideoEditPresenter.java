@@ -15,12 +15,16 @@ import com.sonphan12.vimax.utils.AppConstants;
 
 import java.io.File;
 
+import io.reactivex.disposables.CompositeDisposable;
+
 public class VideoEditPresenter implements Presenter {
     private VideoEditContract.View view;
+    private CompositeDisposable compositeDisposable;
     File newFile;
 
-    VideoEditPresenter(VideoEditContract.View view) {
+    public VideoEditPresenter(VideoEditContract.View view, CompositeDisposable compositeDisposable) {
         this.view = view;
+        this.compositeDisposable = compositeDisposable;
     }
 
     @Override

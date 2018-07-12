@@ -22,6 +22,8 @@ import com.sonphan12.vimax.R;
 import com.sonphan12.vimax.ViMaxApplication;
 import com.sonphan12.vimax.utils.AppConstants;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -29,6 +31,7 @@ import butterknife.OnClick;
 public class VideoEditActivity extends AppCompatActivity implements VideoEditContract.View {
     @BindView(R.id.videoView) VideoView videoView;
     MediaController mediaController;
+    @Inject
     VideoEditContract.Presenter presenter;
     public String videoPath;
     FFmpeg ffmpeg;
@@ -39,13 +42,14 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_edit);
 
+        ((ViMaxApplication)getApplication()).createVideoEditComponent(this).inject(this);
+
         ffmpeg = ((ViMaxApplication)getApplication()).getFfmpegInstance();
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
 
         ButterKnife.bind(this);
-        presenter = new VideoEditPresenter(this);
         Bundle extras = getIntent().getExtras();
         if (extras != null) videoPath = extras.getString(AppConstants.EXTRA_VIDEO_PATH, "");
         presenter.showVideoPreview();

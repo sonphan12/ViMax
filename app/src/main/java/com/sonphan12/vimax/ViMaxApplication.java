@@ -13,8 +13,11 @@ import com.sonphan12.vimax.di.application.ApplicationModule;
 import com.sonphan12.vimax.di.application.DataSourceModule;
 import com.sonphan12.vimax.di.application.FfmpegModule;
 import com.sonphan12.vimax.di.application.DaggerApplicationComponent;
+import com.sonphan12.vimax.di.videoedit.VideoEditComponent;
+import com.sonphan12.vimax.di.videoedit.VideoEditModule;
 import com.sonphan12.vimax.di.videolist.VideoListComponent;
 import com.sonphan12.vimax.di.videolist.VideoListModule;
+import com.sonphan12.vimax.ui.videoedit.VideoEditContract;
 
 import javax.inject.Inject;
 
@@ -22,6 +25,7 @@ public class ViMaxApplication extends Application {
     ApplicationComponent applicationComponent;
     VideoListComponent videoListComponent;
     AlbumListComponent albumListComponent;
+    VideoEditComponent videoEditComponent;
     @Inject
     FFmpeg ffmpeg;
     @Override
@@ -84,11 +88,20 @@ public class ViMaxApplication extends Application {
         return albumListComponent;
     }
 
+    public VideoEditComponent createVideoEditComponent(VideoEditContract.View view) {
+        videoEditComponent = applicationComponent.plus(new VideoEditModule(view));
+        return videoEditComponent;
+    }
+
     public void releaseVideoListComponent() {
         videoListComponent = null;
     }
 
     public void releaseAlbumListComponent() {
         albumListComponent = null;
+    }
+
+    public void releaseVideoEditComponent() {
+        videoEditComponent = null;
     }
 }
