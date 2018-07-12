@@ -9,13 +9,16 @@ import android.widget.Toast;
 
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.FFmpegExecuteResponseHandler;
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
+import com.sonphan12.vimax.R;
 import com.sonphan12.vimax.ui.videoedit.VideoEditContract.Presenter;
 import com.sonphan12.vimax.utils.AppConstants;
+import com.sonphan12.vimax.utils.ApplyScheduler;
 
 import java.io.File;
 
+import io.reactivex.Completable;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 public class VideoEditPresenter implements Presenter {
     private VideoEditContract.View view;
@@ -83,41 +86,56 @@ public class VideoEditPresenter implements Presenter {
 
     @Override
     public void executeFfmpegCommand(String[] command, FFmpeg ffmpeg, String progressMessage) {
-        try {
+        view.showProgressDialog(progressMessage);
+        Disposable d = Completable.create(emitter -> {
             ffmpeg.execute(command, new FFmpegExecuteResponseHandler() {
                 @Override
                 public void onSuccess(String message) {
-
                 }
 
                 @Override
                 public void onProgress(String message) {
-
                 }
 
                 @Override
                 public void onFailure(String message) {
-                    view.showToastMessage("ERROR", Toast.LENGTH_SHORT);
-                    Log.d("execute_error", message);
+                    emitter.onError(new Throwable(message));
                 }
 
                 @Override
                 public void onStart() {
-                    view.showProgressDialog(progressMessage);
                 }
 
                 @Override
                 public void onFinish() {
-                    view.showToastMessage("Finish!", Toast.LENGTH_SHORT);
-                    view.cancelProgressDialog();
-                    ((Activity) view).sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(newFile)));
-                    // Show new video preview
-                    ((VideoEditActivity) view).videoPath = Uri.fromFile(newFile).toString();
-                    view.showVideoPreview();
+                    emitter.onComplete();
                 }
             });
-        } catch (FFmpegCommandAlreadyRunningException e) {
-            e.printStackTrace();
+        })
+                .compose(ApplyScheduler.applySchedulersCompletableComputation())
+                .subscribe(() -> {
+                            view.showToastMessage(((VideoEditActivity)view).getString(R.string.finish), Toast.LENGTH_SHORT);
+                            view.cancelProgressDialog();
+                            ((Activity) view).sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(newFile)));
+                            // Show new video preview
+                            ((VideoEditActivity) view).videoPath = Uri.fromFile(newFile).toString();
+                            view.showVideoPreview();
+                        },
+                        error -> {
+                            Log.d("ERROR_FFMPEG", error.toString());
+                            view.cancelProgressDialog();
+                            view.showToastMessage(((VideoEditActivity) view).getString(R.string.executing_error), Toast.LENGTH_SHORT);
+                        });
+        compositeDisposable.add(d);
+    }
+
+    @Override
+    public void onProgressCancel(FFmpeg ffmpeg) {
+        if (ffmpeg.isFFmpegCommandRunning()) {
+            ffmpeg.killRunningProcesses();
+            compositeDisposable.clear();
+            view.cancelProgressDialog();
+            view.showToastMessage(((VideoEditActivity) view).getString(R.string.command_is_terminated), Toast.LENGTH_SHORT);
         }
     }
 

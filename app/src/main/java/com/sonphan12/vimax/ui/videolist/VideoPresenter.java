@@ -37,14 +37,14 @@ public class VideoPresenter implements VideoContract.Presenter {
         String albumName;
         if (bundle == null || (albumName = bundle.getString(AppConstants.EXTRA_ALBUM_NAME, null)) == null) {
             disposable.add(offlineVideoRepository.loadAll(ctx)
-                    .compose(ApplyScheduler.applySchedulersObservable())
+                    .compose(ApplyScheduler.applySchedulersObservableIO())
                     .subscribe(videos -> {
                         view.hideProgressCircle();
                         view.showVideos(videos);
                     }, e -> view.showToastMessage(e.toString(), Toast.LENGTH_SHORT)));
         } else {
             disposable.add(offlineVideoRepository.loadFromAlbum(ctx, albumName)
-                    .compose(ApplyScheduler.applySchedulersObservable())
+                    .compose(ApplyScheduler.applySchedulersObservableIO())
                     .subscribe(videos -> {
                         view.hideProgressCircle();
                         view.showVideos(videos);
@@ -102,7 +102,7 @@ public class VideoPresenter implements VideoContract.Presenter {
                 if (file.exists()) {
                     disposable.add(
                             offlineVideoRepository.deleteVideo(ctx, video.getId())
-                            .compose(ApplyScheduler.applySchedulersCompletable())
+                            .compose(ApplyScheduler.applySchedulersCompletableIO())
                             .subscribe(() -> {
                                 Intent intent = new Intent(AppConstants.ACTION_UPDATE_DATA);
                                 LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent);

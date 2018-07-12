@@ -107,4 +107,7 @@
     <string name="cancel">Cancel</string>
     <string name="OK">OK</string>
     <string name="_1_0">1.0</string>
+    <string name="command_is_terminated">Command is terminated!</string>
+    <string name="executing_error">Executing error!</string>
+    <string name="finish">Finish!</string>
 </resources>

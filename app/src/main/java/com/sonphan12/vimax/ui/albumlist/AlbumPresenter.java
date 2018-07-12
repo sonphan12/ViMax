@@ -9,9 +9,7 @@ import android.widget.Toast;
 import com.sonphan12.vimax.data.OfflineVideoAlbumRepository;
 import com.sonphan12.vimax.data.OfflineVideoRepository;
 import com.sonphan12.vimax.data.model.Album;
-import com.sonphan12.vimax.data.model.Video;
 import com.sonphan12.vimax.ui.base.BaseFragment;
-import com.sonphan12.vimax.ui.videolist.VideoAdapter;
 import com.sonphan12.vimax.utils.AppConstants;
 import com.sonphan12.vimax.utils.ApplyScheduler;
 
@@ -36,7 +34,7 @@ public class AlbumPresenter implements AlbumContract.Presenter {
     @Override
     public void getAlbums(Context ctx) {
         disposable.add(offlineVideoAlbumRepository.loadAll(ctx)
-                .compose(ApplyScheduler.applySchedulersObservable())
+                .compose(ApplyScheduler.applySchedulersObservableIO())
                 .subscribe(albums -> {
                     view.hideProgressCircle();
                     view.showAlbums(albums);
@@ -128,7 +126,7 @@ public class AlbumPresenter implements AlbumContract.Presenter {
                         album,
                         offlineVideoRepository
                 )
-                        .compose(ApplyScheduler.applySchedulersCompletable())
+                        .compose(ApplyScheduler.applySchedulersCompletableIO())
                         .subscribe(() -> {
                             view.showToastMessage("Deleted!", Toast.LENGTH_SHORT);
                             Intent intent = new Intent(AppConstants.ACTION_UPDATE_DATA);

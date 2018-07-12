@@ -3,7 +3,6 @@ package com.sonphan12.vimax.ui.videoedit;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -47,12 +46,15 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
         ffmpeg = ((ViMaxApplication)getApplication()).getFfmpegInstance();
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setOnCancelListener(dialogInterface -> presenter.onProgressCancel(ffmpeg));
 
         ButterKnife.bind(this);
         Bundle extras = getIntent().getExtras();
         if (extras != null) videoPath = extras.getString(AppConstants.EXTRA_VIDEO_PATH, "");
         presenter.showVideoPreview();
+
 
     }
 
@@ -175,6 +177,11 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
     }
 
     @Override
+    public void finishActivity() {
+        finish();
+    }
+
+    @Override
     public void showToastMessage(String message, int length) {
         Toast.makeText(this, message, length).show();
     }
@@ -193,5 +200,4 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
                 break;
         }
     }
-
 }

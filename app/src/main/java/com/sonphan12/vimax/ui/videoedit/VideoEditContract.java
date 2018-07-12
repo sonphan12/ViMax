@@ -10,6 +10,7 @@ public interface VideoEditContract {
         void showProgressDialog(String message);
         void cancelProgressDialog();
         void createAndShowChangeSpeedDiaglog();
+        void finishActivity();
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -19,5 +20,6 @@ public interface VideoEditContract {
         void onBtnChangeSpeedClicked(String videoUri, FFmpeg ffmpeg);
         void changeVideoSpeed(String videoUri, FFmpeg ffmpeg, double speed);
         void executeFfmpegCommand(String[] command, FFmpeg ffmpeg, String progressMessage);
+        void onProgressCancel(FFmpeg ffmpeg);
     }
 }
