@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import com.sonphan12.vimax.data.model.Album;
 import com.sonphan12.vimax.data.model.Video;
@@ -53,5 +54,32 @@ public class OfflineVideoAlbumRepository{
                     }
                 })
                 .ignoreElements();
+    }
+
+    public Observable<List<Album>> searchAlbum(Context ctx, String query) {
+        if (TextUtils.isEmpty(query)) {
+            return loadAll(ctx);
+        }
+
+        return Observable.create(emitter -> {
+            ArrayList<Album> listAlbum = new ArrayList<>();
+            Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+            String[] projection = {MediaStore.Video.Media.ALBUM ,
+                    "COUNT(*)"};
+            String selection = MediaStore.Video.Media.ALBUM + " LIKE " + "\'%" + query + "%\'" + ")" + " GROUP BY (" + MediaStore.Video.Media.ALBUM;
+
+            Cursor c = ctx.getContentResolver().query(uri, projection, selection, null, null);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    Album album = new Album(c.getString(0), Integer.parseInt(c.getString(1)));
+                    if (album.getNumVideos() > 0) {
+                        listAlbum.add(album);
+                    }
+                }
+                c.close();
+            }
+            emitter.onNext(listAlbum);
+            emitter.onComplete();
+        });
     }
 }

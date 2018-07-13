@@ -6,6 +6,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.sonphan12.vimax.R;
 import com.sonphan12.vimax.data.OfflineVideoAlbumRepository;
 import com.sonphan12.vimax.data.OfflineVideoRepository;
 import com.sonphan12.vimax.data.model.Album;
@@ -15,7 +16,11 @@ import com.sonphan12.vimax.utils.ApplyScheduler;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
 
 public class AlbumPresenter implements AlbumContract.Presenter {
     private AlbumContract.View view;
@@ -49,6 +54,9 @@ public class AlbumPresenter implements AlbumContract.Presenter {
         switch (intent.getAction()) {
             case AppConstants.ACTION_UPDATE_DATA:
                 getAlbums(ctx);
+                break;
+            case AppConstants.ACION_SEARCH:
+                searchAlbum(intent.getStringExtra(AppConstants.EXTRA_SEARCH_QUERY));
                 break;
         }
     }
@@ -135,5 +143,17 @@ public class AlbumPresenter implements AlbumContract.Presenter {
                         }, Throwable::printStackTrace));
             }
         }
+    }
+
+    @Override
+    public void searchAlbum(String query) {
+        disposable.clear();
+        Disposable d = Observable.just(query)
+                .switchMap((Function<String, ObservableSource<List<Album>>>) q -> offlineVideoAlbumRepository.searchAlbum(((BaseFragment) view).getContext(), q))
+                .compose(ApplyScheduler.applySchedulersObservableIO())
+                .subscribe(
+                        listAlbum -> view.showAlbums(listAlbum),
+                        error -> view.showToastMessage(((BaseFragment) view).getContext().getString(R.string.error), Toast.LENGTH_SHORT));
+        disposable.add(d);
     }
 }

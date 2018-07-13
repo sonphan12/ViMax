@@ -131,6 +131,9 @@ public class VideoPresenter implements VideoContract.Presenter {
             case AppConstants.ACTION_UPDATE_DATA:
                 getVideos(context);
                 break;
+            case AppConstants.ACION_SEARCH:
+                // TODO: Impl search video
+                break;
         }
     }
 

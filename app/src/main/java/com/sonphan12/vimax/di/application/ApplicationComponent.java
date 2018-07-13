@@ -11,11 +11,13 @@ import com.sonphan12.vimax.di.videolist.VideoListModule;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import io.reactivex.disposables.CompositeDisposable;
 
 @Singleton
 @Component(modules = {ApplicationModule.class, FfmpegModule.class, DataSourceModule.class})
 public interface ApplicationComponent {
     void inject(ViMaxApplication application);
+    CompositeDisposable getCompositeDisposable();
     VideoListComponent plus(VideoListModule videoListModule);
     AlbumListComponent plus(AlbumListModule albumListModule);
     VideoEditComponent plus(VideoEditModule videoEditModule);

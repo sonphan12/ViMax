@@ -29,6 +29,7 @@ public interface AlbumContract {
         void setUncheckAll(List<Album> listAlbum);
         void checkAlbum(Album album);
         void deleteCheckedAlbums(List<Album> listAlbum);
+        void searchAlbum(String query);
     }
 
     interface AlbumItemListener {

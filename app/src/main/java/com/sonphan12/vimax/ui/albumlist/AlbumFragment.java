@@ -59,7 +59,6 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View, A
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -86,6 +85,7 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View, A
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(AppConstants.ACTION_UPDATE_DATA);
+        intentFilter.addAction(AppConstants.ACION_SEARCH);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, intentFilter);
 
         lvAlbums.addOnScrollListener(new RecyclerView.OnScrollListener() {
