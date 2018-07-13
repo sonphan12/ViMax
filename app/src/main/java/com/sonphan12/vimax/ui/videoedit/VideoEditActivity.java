@@ -28,12 +28,13 @@ import butterknife.OnClick;
 
 public class VideoEditActivity extends AppCompatActivity implements VideoEditContract.View {
     @BindView(R.id.videoView) VideoView videoView;
-    MediaController mediaController;
     @Inject
     VideoEditContract.Presenter presenter;
-    public String videoPath;
+    @Inject
     FFmpeg ffmpeg;
+    MediaController mediaController;
     ProgressDialog progressDialog;
+    public String videoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +42,6 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
         setContentView(R.layout.activity_video_edit);
 
         ((ViMaxApplication)getApplication()).createVideoEditComponent(this).inject(this);
-
-        ffmpeg = ((ViMaxApplication)getApplication()).getFfmpegInstance();
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(true);
@@ -53,8 +52,6 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
         Bundle extras = getIntent().getExtras();
         if (extras != null) videoPath = extras.getString(AppConstants.EXTRA_VIDEO_PATH, "");
         presenter.showVideoPreview();
-
-
     }
 
     @Override
