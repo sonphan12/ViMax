@@ -43,9 +43,7 @@ public class VideoEditPresenter implements Presenter {
         String outputPath = output.getAbsolutePath();
         String[] rotateCommand = {"-y", "-i", inputPath, "-vf", "transpose=1", "-vcodec", "mpeg4", "-c:a", "copy", "-c:v"
                 , "libx264", "-preset", "ultrafast", outputPath};
-        executeFfmpegCommand(rotateCommand, ffmpeg, AppConstants.ROTATE_PROGRESS_MESSAGE);
-
-        newFile = output;
+        executeFfmpegCommand(rotateCommand, ffmpeg, output, AppConstants.ROTATE_PROGRESS_MESSAGE);
     }
 
     @Override
@@ -55,9 +53,7 @@ public class VideoEditPresenter implements Presenter {
         File output = new File(viMaxDir.getAbsolutePath(), String.valueOf(System.currentTimeMillis()) + ".mp4");
         String outputPath = output.getAbsolutePath();
         String[] reverseCommand = {"-y", "-i", inputPath, "-vf", "reverse", "-af", "areverse", "-preset", "ultrafast", outputPath};
-        executeFfmpegCommand(reverseCommand, ffmpeg, AppConstants.REVERSE_PROGRESS_MESSAGE);
-
-        newFile = output;
+        executeFfmpegCommand(reverseCommand, ffmpeg, output, AppConstants.REVERSE_PROGRESS_MESSAGE);
     }
 
     @Override
@@ -79,46 +75,43 @@ public class VideoEditPresenter implements Presenter {
         String speedAudio = String.valueOf(speed);
         String[] changeSpeedCommand = {"-y", "-i", inputPath, "-filter_complex", "[0:v]setpts=" + speedVideo + "*PTS[v];[0:a]atempo=" + speedAudio + "[a]"
                 , "-map", "[v]", "-map", "[a]", "-preset", "ultrafast", outputPath};
-        executeFfmpegCommand(changeSpeedCommand, ffmpeg, AppConstants.CHANGE_SPEED_MESSAGE);
-
-        newFile = output;
+        executeFfmpegCommand(changeSpeedCommand, ffmpeg, output, AppConstants.CHANGE_SPEED_MESSAGE);
     }
 
     @Override
-    public void executeFfmpegCommand(String[] command, FFmpeg ffmpeg, String progressMessage) {
+    public void executeFfmpegCommand(String[] command, FFmpeg ffmpeg, File output, String progressMessage) {
         view.showProgressDialog(progressMessage);
-        Disposable d = Completable.create(emitter -> {
-            ffmpeg.execute(command, new FFmpegExecuteResponseHandler() {
-                @Override
-                public void onSuccess(String message) {
-                }
+        Disposable d = Completable.create(emitter -> ffmpeg.execute(command, new FFmpegExecuteResponseHandler() {
+            @Override
+            public void onSuccess(String message) {
+            }
 
-                @Override
-                public void onProgress(String message) {
-                }
+            @Override
+            public void onProgress(String message) {
+            }
 
-                @Override
-                public void onFailure(String message) {
-                    emitter.onError(new Throwable(message));
-                }
+            @Override
+            public void onFailure(String message) {
+                emitter.onError(new Throwable(message));
+            }
 
-                @Override
-                public void onStart() {
-                }
+            @Override
+            public void onStart() {
+            }
 
-                @Override
-                public void onFinish() {
-                    emitter.onComplete();
-                }
-            });
-        })
+            @Override
+            public void onFinish() {
+                newFile = output;
+                emitter.onComplete();
+            }
+        }))
                 .compose(ApplyScheduler.applySchedulersCompletableComputation())
                 .subscribe(() -> {
-                            view.showToastMessage(((VideoEditActivity)view).getString(R.string.finish), Toast.LENGTH_SHORT);
+                            view.showToastMessage(((VideoEditActivity) view).getString(R.string.finish), Toast.LENGTH_SHORT);
                             view.cancelProgressDialog();
                             ((Activity) view).sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(newFile)));
                             // Show new video preview
-                            ((VideoEditActivity) view).videoPath = Uri.fromFile(newFile).toString();
+                            ((VideoEditActivity) view).videoPath = newFile.getPath();
                             view.showVideoPreview();
                         },
                         error -> {

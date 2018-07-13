@@ -4,6 +4,8 @@ import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.sonphan12.vimax.ui.base.BasePresenter;
 import com.sonphan12.vimax.ui.base.BaseView;
 
+import java.io.File;
+
 public interface VideoEditContract {
     interface View extends BaseView {
         void showVideoPreview();
@@ -19,7 +21,7 @@ public interface VideoEditContract {
         void onBtnReverseClicked(String videoUri, FFmpeg ffmpeg);
         void onBtnChangeSpeedClicked(String videoUri, FFmpeg ffmpeg);
         void changeVideoSpeed(String videoUri, FFmpeg ffmpeg, double speed);
-        void executeFfmpegCommand(String[] command, FFmpeg ffmpeg, String progressMessage);
+        void executeFfmpegCommand(String[] command, FFmpeg ffmpeg, File output, String progressMessage);
         void onProgressCancel(FFmpeg ffmpeg);
     }
 }
