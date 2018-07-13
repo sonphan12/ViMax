@@ -61,6 +61,7 @@ public class AlbumPresenter implements AlbumContract.Presenter {
     @Override
     public void destroy() {
         disposable.dispose();
+        this.view = null;
     }
 
     @Override

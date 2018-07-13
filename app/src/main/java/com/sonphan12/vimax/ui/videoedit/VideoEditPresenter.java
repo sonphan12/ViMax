@@ -146,7 +146,8 @@ public class VideoEditPresenter implements Presenter {
 
     @Override
     public void destroy() {
-
+        compositeDisposable.dispose();
+        this.view = null;
     }
 
     private File createVimaxDirIfNotExist() {

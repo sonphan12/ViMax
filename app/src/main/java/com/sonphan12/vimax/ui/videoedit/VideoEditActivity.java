@@ -200,4 +200,10 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
                 break;
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.destroy();
+    }
 }

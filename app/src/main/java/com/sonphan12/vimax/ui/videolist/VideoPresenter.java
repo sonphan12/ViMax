@@ -154,5 +154,6 @@ public class VideoPresenter implements VideoContract.Presenter {
     @Override
     public void destroy() {
         disposable.dispose();
+        this.view = null;
     }
 }
