@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
+import com.sonphan12.vimax.R;
 import com.sonphan12.vimax.data.OfflineVideoRepository;
 import com.sonphan12.vimax.data.model.Video;
 import com.sonphan12.vimax.ui.base.BaseFragment;
@@ -17,7 +18,11 @@ import java.io.File;
 import java.util.List;
 
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
 
 public class VideoPresenter implements VideoContract.Presenter {
     private VideoContract.View view;
@@ -132,7 +137,7 @@ public class VideoPresenter implements VideoContract.Presenter {
                 getVideos(context);
                 break;
             case AppConstants.ACION_SEARCH:
-                // TODO: Impl search video
+                searchVideo(intent.getStringExtra(AppConstants.EXTRA_SEARCH_QUERY));
                 break;
         }
     }
@@ -148,6 +153,17 @@ public class VideoPresenter implements VideoContract.Presenter {
         view.scrollOnTop();
     }
 
+    @Override
+    public void searchVideo(String query) {
+        disposable.clear();
+        Disposable d = Observable.just(query)
+                .switchMap((Function<String, ObservableSource<List<Video>>>) q -> offlineVideoRepository.searchVideo(((BaseFragment) view).getContext(), q))
+                .compose(ApplyScheduler.applySchedulersObservableIO())
+                .subscribe(
+                        listVideo -> view.showVideos(listVideo),
+                        error -> view.showToastMessage(((BaseFragment) view).getContext().getString(R.string.error), Toast.LENGTH_SHORT));
+        disposable.add(d);
+    }
 
     @Override
     public void setView(VideoContract.View view) {

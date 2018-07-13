@@ -7,7 +7,6 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import com.sonphan12.vimax.data.model.Album;
-import com.sonphan12.vimax.data.model.Video;
 
 import java.io.File;
 import java.util.ArrayList;

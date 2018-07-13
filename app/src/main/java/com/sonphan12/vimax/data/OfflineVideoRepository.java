@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import com.sonphan12.vimax.data.model.Video;
 import com.sonphan12.vimax.utils.TimeConversion;
@@ -76,5 +77,35 @@ public class OfflineVideoRepository {
             ctx.getContentResolver().delete(uri, where, selection);
             emitter.onComplete();
         });
+    }
+
+    public Observable<List<Video>> searchVideo(Context ctx, String query) {
+        if (TextUtils.isEmpty(query)) {
+            return loadAll(ctx);
+        }
+
+        return Observable.create(emitter -> {
+                    ArrayList<Video> listVideo = new ArrayList<>();
+                    Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                    String[] projection = {
+                            MediaStore.Video.Media._ID,
+                            MediaStore.Video.Media.DATA,
+                            MediaStore.Video.Media.TITLE,
+                            MediaStore.Video.Media.DURATION
+                    };
+                    String selection = MediaStore.Video.Media.TITLE + " LIKE " + "\'%" + query + "%\'";
+                    Cursor c = ctx.getContentResolver().query(uri, projection, selection, null, null);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            Video video = new Video(c.getString(0), c.getString(1),
+                                    c.getString(2), TimeConversion.milisToFullTime(c.getString(3)));
+                            listVideo.add(video);
+                        }
+                        c.close();
+                    }
+                    emitter.onNext(listVideo);
+                    emitter.onComplete();
+                }
+        );
     }
 }

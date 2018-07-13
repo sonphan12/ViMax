@@ -32,6 +32,7 @@ public interface VideoContract {
         void onReceiveAction(Context context, Intent intent);
         void onListScroll(int lastVisiblePosition, int listSize, int dx, int dy);
         void onBtnBackOnTopClicked();
+        void searchVideo(String query);
     }
 
     interface VideoItemListener {

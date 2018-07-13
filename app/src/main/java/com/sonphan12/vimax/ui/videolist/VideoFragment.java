@@ -87,6 +87,7 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(AppConstants.ACTION_UPDATE_DATA);
+        intentFilter.addAction(AppConstants.ACION_SEARCH);
 
         receiver = new BroadcastReceiver() {
             @Override
