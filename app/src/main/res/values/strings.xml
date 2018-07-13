@@ -111,4 +111,6 @@
     <string name="executing_error">Executing error!</string>
     <string name="finish">Finish!</string>
     <string name="error">ERROR</string>
+    <string name="sort_asc">Sort asc</string>
+    <string name="sort_desc">Sort desc</string>
 </resources>

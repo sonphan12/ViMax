@@ -139,6 +139,12 @@ public class VideoPresenter implements VideoContract.Presenter {
             case AppConstants.ACION_SEARCH:
                 searchVideo(intent.getStringExtra(AppConstants.EXTRA_SEARCH_QUERY));
                 break;
+            case AppConstants.ACTION_SORT_ASC:
+
+                break;
+            case AppConstants.ACTION_SORT_DESC:
+
+                break;
         }
     }
 

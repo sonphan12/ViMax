@@ -86,6 +86,9 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View, A
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(AppConstants.ACTION_UPDATE_DATA);
         intentFilter.addAction(AppConstants.ACION_SEARCH);
+        intentFilter.addAction(AppConstants.ACTION_SORT_ASC);
+        intentFilter.addAction(AppConstants.ACTION_SORT_DESC);
+
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, intentFilter);
 
         lvAlbums.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -138,6 +141,11 @@ public class AlbumFragment extends BaseFragment implements AlbumContract.View, A
     public void showAlbums(List<Album> listAlbum) {
         albumAdapter.setListAlbum(listAlbum);
         albumAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showCurrentAlbumsWithOptions(String option) {
+        presenter.showCurrentAlbumsWithOptions(albumAdapter.getListAlbum(), option);
     }
 
     @Override

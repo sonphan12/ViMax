@@ -3,6 +3,7 @@ package com.sonphan12.vimax.ui.albumlist;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,8 +15,10 @@ import com.sonphan12.vimax.ui.base.BaseFragment;
 import com.sonphan12.vimax.utils.AppConstants;
 import com.sonphan12.vimax.utils.ApplyScheduler;
 
+import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.disposables.CompositeDisposable;
@@ -26,19 +29,19 @@ public class AlbumPresenter implements AlbumContract.Presenter {
     private AlbumContract.View view;
     private OfflineVideoAlbumRepository offlineVideoAlbumRepository;
     private OfflineVideoRepository offlineVideoRepository;
-    private CompositeDisposable disposable;
+    private CompositeDisposable compositeDisposable;
 
     public AlbumPresenter(OfflineVideoAlbumRepository offlineVideoAlbumRepository,
                           OfflineVideoRepository offlineVideoRepository,
-                          CompositeDisposable disposable) {
+                          CompositeDisposable compositeDisposable) {
         this.offlineVideoAlbumRepository = offlineVideoAlbumRepository;
         this.offlineVideoRepository = offlineVideoRepository;
-        this.disposable = disposable;
+        this.compositeDisposable = compositeDisposable;
     }
 
     @Override
     public void getAlbums(Context ctx) {
-        disposable.add(offlineVideoAlbumRepository.loadAll(ctx)
+        compositeDisposable.add(offlineVideoAlbumRepository.loadAll(ctx)
                 .compose(ApplyScheduler.applySchedulersObservableIO())
                 .subscribe(albums -> {
                     view.hideProgressCircle();
@@ -58,6 +61,12 @@ public class AlbumPresenter implements AlbumContract.Presenter {
             case AppConstants.ACION_SEARCH:
                 searchAlbum(intent.getStringExtra(AppConstants.EXTRA_SEARCH_QUERY));
                 break;
+            case AppConstants.ACTION_SORT_ASC:
+                view.showCurrentAlbumsWithOptions(AppConstants.ACTION_SORT_ASC);
+                break;
+            case AppConstants.ACTION_SORT_DESC:
+                view.showCurrentAlbumsWithOptions(AppConstants.ACTION_SORT_DESC);
+                break;
         }
     }
 
@@ -68,7 +77,7 @@ public class AlbumPresenter implements AlbumContract.Presenter {
 
     @Override
     public void destroy() {
-        disposable.dispose();
+        compositeDisposable.dispose();
         this.view = null;
     }
 
@@ -130,7 +139,7 @@ public class AlbumPresenter implements AlbumContract.Presenter {
     public void deleteCheckedAlbums(List<Album> listAlbum) {
         for (Album album : listAlbum) {
             if (album.isChecked()) {
-                disposable.add(offlineVideoAlbumRepository.deleteAlbum(
+                compositeDisposable.add(offlineVideoAlbumRepository.deleteAlbum(
                         ((BaseFragment) view).getContext(),
                         album,
                         offlineVideoRepository
@@ -147,13 +156,53 @@ public class AlbumPresenter implements AlbumContract.Presenter {
 
     @Override
     public void searchAlbum(String query) {
-        disposable.clear();
+        compositeDisposable.clear();
         Disposable d = Observable.just(query)
                 .switchMap((Function<String, ObservableSource<List<Album>>>) q -> offlineVideoAlbumRepository.searchAlbum(((BaseFragment) view).getContext(), q))
                 .compose(ApplyScheduler.applySchedulersObservableIO())
                 .subscribe(
                         listAlbum -> view.showAlbums(listAlbum),
                         error -> view.showToastMessage(((BaseFragment) view).getContext().getString(R.string.error), Toast.LENGTH_SHORT));
-        disposable.add(d);
+        compositeDisposable.add(d);
+    }
+
+    @Override
+    public void showCurrentAlbumsWithOptions(List<Album> listCurrentAlbums, String option) {
+        compositeDisposable.clear();
+
+        Disposable d = Completable.create(emitter -> {
+                    if (option.equals(AppConstants.ACTION_SORT_ASC)) {
+                        Collections.sort(listCurrentAlbums, this::compareAlbum);
+                    } else {
+                        Collections.sort(listCurrentAlbums, (a1, a2) -> -compareAlbum(a1, a2));
+                    }
+                    emitter.onComplete();
+                }
+        )
+                .compose(ApplyScheduler.applySchedulersCompletableComputation())
+                .subscribe(
+                        () -> view.showAlbums(listCurrentAlbums),
+                        error -> view.showToastMessage(((BaseFragment)view).getString(R.string.error), Toast.LENGTH_SHORT)
+                );
+
+        compositeDisposable.add(d);
+    }
+
+    private int compareAlbum(Album a1, Album a2) {
+        if (TextUtils.isEmpty(a1.getName())) {
+            if (!TextUtils.isEmpty(a2.getName())) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+        if (TextUtils.isEmpty(a2.getName())) {
+            if (!TextUtils.isEmpty(a1.getName())) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        return a1.getName().compareTo(a2.getName());
     }
 }

@@ -18,4 +18,6 @@ public interface AppConstants {
     String CHANGE_SPEED_MESSAGE = "Changing speed of the video, please wait...";
     String ACTION_UPDATE_DATA = "action_update_data";
     String ACION_SEARCH = "action_search";
+    String ACTION_SORT_ASC = "action_sort_asc";
+    String ACTION_SORT_DESC = "action_sort_desc";
 }

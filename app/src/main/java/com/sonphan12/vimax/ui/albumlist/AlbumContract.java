@@ -11,6 +11,7 @@ import java.util.List;
 public interface AlbumContract {
     interface View extends BaseFragmentView {
         void showAlbums(List<Album> listAlbum);
+        void showCurrentAlbumsWithOptions(String option);
         void showProgressCircle();
         void hideProgressCircle();
         void showBackOnTopButton();
@@ -30,6 +31,7 @@ public interface AlbumContract {
         void checkAlbum(Album album);
         void deleteCheckedAlbums(List<Album> listAlbum);
         void searchAlbum(String query);
+        void showCurrentAlbumsWithOptions(List<Album> listCurrentAlbums, String option);
     }
 
     interface AlbumItemListener {
