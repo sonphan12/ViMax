@@ -39,7 +39,7 @@ public class VideoEditPresenter implements Presenter {
     public void onBtnRotateClicked(String videoUri, FFmpeg ffmpeg) {
         File viMaxDir = createVimaxDirIfNotExist();
         String inputPath = new File(videoUri).getAbsolutePath();
-        File output = new File(viMaxDir.getAbsolutePath(), String.valueOf(System.currentTimeMillis()) + ".mp4");
+        File output = new File(viMaxDir.getAbsolutePath(), String.format("ViMax_%d.mp4", System.currentTimeMillis()));
         String outputPath = output.getAbsolutePath();
         String[] rotateCommand = {"-y", "-i", inputPath, "-vf", "transpose=1", "-vcodec", "mpeg4", "-c:a", "copy", "-c:v"
                 , "libx264", "-preset", "ultrafast", outputPath};
@@ -50,7 +50,7 @@ public class VideoEditPresenter implements Presenter {
     public void onBtnReverseClicked(String videoUri, FFmpeg ffmpeg) {
         File viMaxDir = createVimaxDirIfNotExist();
         String inputPath = new File(videoUri).getAbsolutePath();
-        File output = new File(viMaxDir.getAbsolutePath(), String.valueOf(System.currentTimeMillis()) + ".mp4");
+        File output = new File(viMaxDir.getAbsolutePath(), String.format("ViMax_%d.mp4", System.currentTimeMillis()));
         String outputPath = output.getAbsolutePath();
         String[] reverseCommand = {"-y", "-i", inputPath, "-vf", "reverse", "-af", "areverse", "-preset", "ultrafast", outputPath};
         executeFfmpegCommand(reverseCommand, ffmpeg, output, AppConstants.REVERSE_PROGRESS_MESSAGE);
@@ -65,7 +65,7 @@ public class VideoEditPresenter implements Presenter {
     public void changeVideoSpeed(String videoUri, FFmpeg ffmpeg, double speed) {
         File viMaxDir = createVimaxDirIfNotExist();
         String inputPath = new File(videoUri).getAbsolutePath();
-        File output = new File(viMaxDir.getAbsolutePath(), String.valueOf(System.currentTimeMillis()) + ".mp4");
+        File output = new File(viMaxDir.getAbsolutePath(), String.format("ViMax_%d.mp4", System.currentTimeMillis()));
         String outputPath = output.getAbsolutePath();
 
         if (speed > 2) speed = 2;
