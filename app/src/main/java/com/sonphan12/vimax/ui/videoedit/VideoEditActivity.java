@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,7 +28,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class VideoEditActivity extends AppCompatActivity implements VideoEditContract.View {
-    @BindView(R.id.videoView) VideoView videoView;
+    @BindView(R.id.videoView)
+    VideoView videoView;
     @Inject
     VideoEditContract.Presenter presenter;
     @Inject
@@ -41,7 +43,7 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_edit);
 
-        ((ViMaxApplication)getApplication()).createVideoEditComponent(this).inject(this);
+        ((ViMaxApplication) getApplication()).createVideoEditComponent(this).inject(this);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(true);
@@ -56,9 +58,7 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
 
     @Override
     public void showVideoPreview() {
-        if (videoPath == null || videoPath.isEmpty()) {
-            return;
-        } else {
+        if (!TextUtils.isEmpty(videoPath)) {
             if (mediaController == null) {
                 mediaController = new MediaController(this);
                 mediaController.setAnchorView(videoView);
@@ -103,10 +103,12 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
         // edtSpeed change dynamically with the progress bar
         TextWatcher textWatcher = new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -121,7 +123,7 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
                         edtSpeed.setText(String.valueOf(dSpeed));
                         return;
                     }
-                    sbSpeed.setProgress((int)(dSpeed * 100 / 2));
+                    sbSpeed.setProgress((int) (dSpeed * 100 / 2));
                 } catch (Exception e) {
                     edtSpeed.setText("0.5");
                     Log.d(this.getClass().getSimpleName(), e.toString());
@@ -146,10 +148,12 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) { }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) { }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
 
         edtSpeed.addTextChangedListener(textWatcher);
