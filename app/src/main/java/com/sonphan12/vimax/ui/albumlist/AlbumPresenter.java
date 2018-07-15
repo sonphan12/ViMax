@@ -11,6 +11,7 @@ import com.sonphan12.vimax.R;
 import com.sonphan12.vimax.data.OfflineVideoAlbumRepository;
 import com.sonphan12.vimax.data.OfflineVideoRepository;
 import com.sonphan12.vimax.data.model.Album;
+import com.sonphan12.vimax.data.model.AlbumComparator;
 import com.sonphan12.vimax.ui.base.BaseFragment;
 import com.sonphan12.vimax.utils.AppConstants;
 import com.sonphan12.vimax.utils.ApplyScheduler;
@@ -171,10 +172,12 @@ public class AlbumPresenter implements AlbumContract.Presenter {
         compositeDisposable.clear();
 
         Disposable d = Completable.create(emitter -> {
+                    AlbumComparator albumComparator = new AlbumComparator();
                     if (option.equals(AppConstants.ACTION_SORT_ASC)) {
-                        Collections.sort(listCurrentAlbums, this::compareAlbum);
+                        Collections.sort(listCurrentAlbums, albumComparator);
                     } else {
-                        Collections.sort(listCurrentAlbums, (a1, a2) -> -compareAlbum(a1, a2));
+                        Collections.sort(listCurrentAlbums, albumComparator);
+                        Collections.reverse(listCurrentAlbums);
                     }
                     emitter.onComplete();
                 }
@@ -186,23 +189,5 @@ public class AlbumPresenter implements AlbumContract.Presenter {
                 );
 
         compositeDisposable.add(d);
-    }
-
-    private int compareAlbum(Album a1, Album a2) {
-        if (TextUtils.isEmpty(a1.getName())) {
-            if (!TextUtils.isEmpty(a2.getName())) {
-                return -1;
-            } else {
-                return 0;
-            }
-        }
-        if (TextUtils.isEmpty(a2.getName())) {
-            if (!TextUtils.isEmpty(a1.getName())) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-        return a1.getName().compareTo(a2.getName());
     }
 }

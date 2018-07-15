@@ -38,4 +38,5 @@ public class Album {
     public void setChecked(boolean checked) {
         isChecked = checked;
     }
+
 }
