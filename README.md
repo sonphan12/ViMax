@@ -1,5 +1,6 @@
 # ViMax
-Android Video Editing Application build on top of FFmpeg.
+Android Video Editing Application build on top of FFmpeg. 
+Just playing around.
 
 ## Dependencies
 * [FFmpeg-Android-Java](https://github.com/WritingMinds/ffmpeg-android-java)
