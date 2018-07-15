@@ -3,7 +3,6 @@ package com.sonphan12.vimax.ui.albumlist;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 

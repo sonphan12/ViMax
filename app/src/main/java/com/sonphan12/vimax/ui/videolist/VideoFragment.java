@@ -130,6 +130,11 @@ public class VideoFragment extends BaseFragment implements VideoContract.View, V
     }
 
     @Override
+    public void showCurrentVideosWithOptions(String option) {
+        presenter.showCurrentVideosWithOptions(videoAdapter.getListVideo(), option);
+    }
+
+    @Override
     public void showProgressCircle() {
         loadingProgress.setVisibility(View.VISIBLE);
     }

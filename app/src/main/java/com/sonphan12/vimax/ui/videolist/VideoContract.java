@@ -14,6 +14,7 @@ import io.reactivex.Observable;
 public interface VideoContract {
     interface View extends BaseFragmentView {
         void showVideos(List<Video> listVideo);
+        void showCurrentVideosWithOptions(String option);
         void showProgressCircle();
         void hideProgressCircle();
         void showBackOnTopButton();
@@ -33,6 +34,7 @@ public interface VideoContract {
         void onListScroll(int lastVisiblePosition, int listSize, int dx, int dy);
         void onBtnBackOnTopClicked();
         void searchVideo(String query);
+        void showCurrentVideosWithOptions(List<Video> listCurrentVideos, String option);
     }
 
     interface VideoItemListener {

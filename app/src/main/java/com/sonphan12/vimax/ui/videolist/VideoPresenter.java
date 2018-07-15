@@ -10,14 +10,17 @@ import android.widget.Toast;
 import com.sonphan12.vimax.R;
 import com.sonphan12.vimax.data.OfflineVideoRepository;
 import com.sonphan12.vimax.data.model.Video;
+import com.sonphan12.vimax.data.model.VideoComparator;
 import com.sonphan12.vimax.ui.base.BaseFragment;
 import com.sonphan12.vimax.utils.AppConstants;
 import com.sonphan12.vimax.utils.ApplyScheduler;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.disposables.CompositeDisposable;
@@ -27,12 +30,12 @@ import io.reactivex.functions.Function;
 public class VideoPresenter implements VideoContract.Presenter {
     private VideoContract.View view;
     private OfflineVideoRepository offlineVideoRepository;
-    private CompositeDisposable disposable;
+    private CompositeDisposable compositeDisposable;
 
     public VideoPresenter(OfflineVideoRepository offlineVideoRepository
             , CompositeDisposable compositeDisposable) {
         this.offlineVideoRepository = offlineVideoRepository;
-        this.disposable = compositeDisposable;
+        this.compositeDisposable = compositeDisposable;
     }
 
 
@@ -41,14 +44,14 @@ public class VideoPresenter implements VideoContract.Presenter {
         Bundle bundle = ((Fragment) view).getArguments();
         String albumName;
         if (bundle == null || (albumName = bundle.getString(AppConstants.EXTRA_ALBUM_NAME, null)) == null) {
-            disposable.add(offlineVideoRepository.loadAll(ctx)
+            compositeDisposable.add(offlineVideoRepository.loadAll(ctx)
                     .compose(ApplyScheduler.applySchedulersObservableIO())
                     .subscribe(videos -> {
                         view.hideProgressCircle();
                         view.showVideos(videos);
                     }, e -> view.showToastMessage(e.toString(), Toast.LENGTH_SHORT)));
         } else {
-            disposable.add(offlineVideoRepository.loadFromAlbum(ctx, albumName)
+            compositeDisposable.add(offlineVideoRepository.loadFromAlbum(ctx, albumName)
                     .compose(ApplyScheduler.applySchedulersObservableIO())
                     .subscribe(videos -> {
                         view.hideProgressCircle();
@@ -105,7 +108,7 @@ public class VideoPresenter implements VideoContract.Presenter {
                 numVideoToDelete++;
                 File file = new File(video.getFileSrc());
                 if (file.exists()) {
-                    disposable.add(
+                    compositeDisposable.add(
                             offlineVideoRepository.deleteVideo(ctx, video.getId())
                             .compose(ApplyScheduler.applySchedulersCompletableIO())
                             .subscribe(() -> {
@@ -140,10 +143,10 @@ public class VideoPresenter implements VideoContract.Presenter {
                 searchVideo(intent.getStringExtra(AppConstants.EXTRA_SEARCH_QUERY));
                 break;
             case AppConstants.ACTION_SORT_ASC:
-
+                view.showCurrentVideosWithOptions(AppConstants.ACTION_SORT_ASC);
                 break;
             case AppConstants.ACTION_SORT_DESC:
-
+                view.showCurrentVideosWithOptions(AppConstants.ACTION_SORT_DESC);
                 break;
         }
     }
@@ -161,14 +164,38 @@ public class VideoPresenter implements VideoContract.Presenter {
 
     @Override
     public void searchVideo(String query) {
-        disposable.clear();
+        compositeDisposable.clear();
         Disposable d = Observable.just(query)
                 .switchMap((Function<String, ObservableSource<List<Video>>>) q -> offlineVideoRepository.searchVideo(((BaseFragment) view).getContext(), q))
                 .compose(ApplyScheduler.applySchedulersObservableIO())
                 .subscribe(
                         listVideo -> view.showVideos(listVideo),
                         error -> view.showToastMessage(((BaseFragment) view).getContext().getString(R.string.error), Toast.LENGTH_SHORT));
-        disposable.add(d);
+        compositeDisposable.add(d);
+    }
+
+    @Override
+    public void showCurrentVideosWithOptions(List<Video> listCurrentVideos, String option) {
+        compositeDisposable.clear();
+
+        Disposable d = Completable.create(emitter -> {
+                    VideoComparator videoComparator = new VideoComparator();
+                    if (option.equals(AppConstants.ACTION_SORT_ASC)) {
+                        Collections.sort(listCurrentVideos, videoComparator);
+                    } else {
+                        Collections.sort(listCurrentVideos, videoComparator);
+                        Collections.reverse(listCurrentVideos);
+                    }
+                    emitter.onComplete();
+                }
+        )
+                .compose(ApplyScheduler.applySchedulersCompletableComputation())
+                .subscribe(
+                        () -> view.showVideos(listCurrentVideos),
+                        error -> view.showToastMessage(((BaseFragment)view).getString(R.string.error), Toast.LENGTH_SHORT)
+                );
+
+        compositeDisposable.add(d);
     }
 
     @Override
@@ -178,7 +205,7 @@ public class VideoPresenter implements VideoContract.Presenter {
 
     @Override
     public void destroy() {
-        disposable.dispose();
+        compositeDisposable.dispose();
         this.view = null;
     }
 }
