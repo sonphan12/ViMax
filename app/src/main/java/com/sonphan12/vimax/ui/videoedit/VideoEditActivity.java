@@ -82,6 +82,13 @@ public class VideoEditActivity extends AppCompatActivity implements VideoEditCon
         progressDialog.show();
     }
 
+    @Override
+    public void updateProgressDialog(String progressMessage) {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.setMessage(progressMessage);
+        }
+    }
+
 
     @Override
     public void cancelProgressDialog() {

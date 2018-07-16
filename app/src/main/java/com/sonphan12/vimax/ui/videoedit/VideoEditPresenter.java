@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import com.sonphan12.vimax.utils.ApplyScheduler;
 import java.io.File;
 
 import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
@@ -80,13 +82,21 @@ public class VideoEditPresenter implements Presenter {
 
     @Override
     public void executeFfmpegCommand(String[] command, FFmpeg ffmpeg, File output, String progressMessage) {
-        Disposable d = Completable.create(emitter -> ffmpeg.execute(command, new FFmpegExecuteResponseHandler() {
+        Disposable d = Observable.create(emitter -> ffmpeg.execute(command, new FFmpegExecuteResponseHandler() {
             @Override
             public void onSuccess(String message) {
             }
 
             @Override
             public void onProgress(String message) {
+                Log.d("FFMPEG", message);
+                String progress;
+                try {
+                    progress = message.substring(message.indexOf("size"), message.indexOf("time") - 1);
+                } catch (Exception ex) {
+                    progress = "";
+                }
+                emitter.onNext(progress);
             }
 
             @Override
@@ -104,19 +114,25 @@ public class VideoEditPresenter implements Presenter {
                 emitter.onComplete();
             }
         }))
-                .compose(ApplyScheduler.applySchedulersCompletableComputation())
+                .compose(ApplyScheduler.applySchedulersObservableComputation())
                 .doOnSubscribe(__ -> view.showProgressDialog(progressMessage))
                 .doOnTerminate(() -> view.cancelProgressDialog())
-                .subscribe(() -> {
+                .subscribe(
+                        progress -> {
+                            if (!TextUtils.isEmpty((String) progress)) {
+                                view.updateProgressDialog(progressMessage + "\n" + progress);
+                            }
+                        },
+                        error -> {
+                            Log.d("ERROR_FFMPEG", error.toString());
+                            view.showToastMessage(((VideoEditActivity) view).getString(R.string.executing_error), Toast.LENGTH_SHORT);
+                        },
+                        () -> {
                             view.showToastMessage(((VideoEditActivity) view).getString(R.string.finish), Toast.LENGTH_SHORT);
                             ((Activity) view).sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(newFile)));
                             // Show new video preview
                             ((VideoEditActivity) view).videoPath = newFile.getPath();
                             view.showVideoPreview();
-                        },
-                        error -> {
-                            Log.d("ERROR_FFMPEG", error.toString());
-                            view.showToastMessage(((VideoEditActivity) view).getString(R.string.executing_error), Toast.LENGTH_SHORT);
                         });
         compositeDisposable.add(d);
     }

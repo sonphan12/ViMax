@@ -10,6 +10,7 @@ public interface VideoEditContract {
     interface View extends BaseView {
         void showVideoPreview();
         void showProgressDialog(String message);
+        void updateProgressDialog(String progressMessage);
         void cancelProgressDialog();
         void createAndShowChangeSpeedDiaglog();
         void finishActivity();
