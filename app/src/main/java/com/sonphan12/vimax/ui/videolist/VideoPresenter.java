@@ -16,6 +16,7 @@ import com.sonphan12.vimax.utils.AppConstants;
 import com.sonphan12.vimax.utils.ApplyScheduler;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,17 +47,17 @@ public class VideoPresenter implements VideoContract.Presenter {
         if (bundle == null || (albumName = bundle.getString(AppConstants.EXTRA_ALBUM_NAME, null)) == null) {
             compositeDisposable.add(offlineVideoRepository.loadAll(ctx)
                     .compose(ApplyScheduler.applySchedulersObservableIO())
-                    .subscribe(videos -> {
-                        view.hideProgressCircle();
-                        view.showVideos(videos);
-                    }, e -> view.showToastMessage(e.toString(), Toast.LENGTH_SHORT)));
+                    .doOnSubscribe(__ -> view.showProgressCircle())
+                    .doOnTerminate(() -> view.hideProgressCircle())
+                    .subscribe(videos -> view.showVideos(videos),
+                            e -> view.showToastMessage(e.toString(), Toast.LENGTH_SHORT)));
         } else {
             compositeDisposable.add(offlineVideoRepository.loadFromAlbum(ctx, albumName)
                     .compose(ApplyScheduler.applySchedulersObservableIO())
-                    .subscribe(videos -> {
-                        view.hideProgressCircle();
-                        view.showVideos(videos);
-                    }, e -> view.showToastMessage(e.toString(), Toast.LENGTH_SHORT)));
+                    .doOnSubscribe(__ -> view.showProgressCircle())
+                    .doOnTerminate(() -> view.hideProgressCircle())
+                    .subscribe(videos -> view.showVideos(videos),
+                            e -> view.showToastMessage(e.toString(), Toast.LENGTH_SHORT)));
         }
     }
 
@@ -168,6 +169,11 @@ public class VideoPresenter implements VideoContract.Presenter {
         Disposable d = Observable.just(query)
                 .switchMap((Function<String, ObservableSource<List<Video>>>) q -> offlineVideoRepository.searchVideo(((BaseFragment) view).getContext(), q))
                 .compose(ApplyScheduler.applySchedulersObservableIO())
+                .doOnSubscribe(__ -> {
+                    view.showVideos(new ArrayList<>());
+                    view.showProgressCircle();
+                })
+                .doOnTerminate(() -> view.hideProgressCircle())
                 .subscribe(
                         listVideo -> view.showVideos(listVideo),
                         error -> view.showToastMessage(((BaseFragment) view).getContext().getString(R.string.error), Toast.LENGTH_SHORT));
@@ -190,6 +196,11 @@ public class VideoPresenter implements VideoContract.Presenter {
                 }
         )
                 .compose(ApplyScheduler.applySchedulersCompletableComputation())
+                .doOnSubscribe(__ -> {
+                    view.showVideos(new ArrayList<>());
+                    view.showProgressCircle();
+                })
+                .doOnTerminate(() -> view.hideProgressCircle())
                 .subscribe(
                         () -> view.showVideos(listCurrentVideos),
                         error -> view.showToastMessage(((BaseFragment)view).getString(R.string.error), Toast.LENGTH_SHORT)

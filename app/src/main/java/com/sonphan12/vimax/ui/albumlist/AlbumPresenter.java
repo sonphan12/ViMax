@@ -15,6 +15,7 @@ import com.sonphan12.vimax.ui.base.BaseFragment;
 import com.sonphan12.vimax.utils.AppConstants;
 import com.sonphan12.vimax.utils.ApplyScheduler;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,10 +44,9 @@ public class AlbumPresenter implements AlbumContract.Presenter {
     public void getAlbums(Context ctx) {
         compositeDisposable.add(offlineVideoAlbumRepository.loadAll(ctx)
                 .compose(ApplyScheduler.applySchedulersObservableIO())
-                .subscribe(albums -> {
-                    view.hideProgressCircle();
-                    view.showAlbums(albums);
-                }, e -> {
+                .doOnSubscribe(__ -> view.showProgressCircle())
+                .doOnTerminate(() -> view.hideProgressCircle())
+                .subscribe(albums -> view.showAlbums(albums), e -> {
                     view.showToastMessage(e.toString(), Toast.LENGTH_SHORT);
                     Log.d("ERROR_GET_ALBUMS", e.toString());
                 }));
@@ -160,6 +160,11 @@ public class AlbumPresenter implements AlbumContract.Presenter {
         Disposable d = Observable.just(query)
                 .switchMap((Function<String, ObservableSource<List<Album>>>) q -> offlineVideoAlbumRepository.searchAlbum(((BaseFragment) view).getContext(), q))
                 .compose(ApplyScheduler.applySchedulersObservableIO())
+                .doOnSubscribe(__ -> {
+                    view.showAlbums(new ArrayList<>());
+                    view.showProgressCircle();
+                })
+                .doOnTerminate(() -> view.hideProgressCircle())
                 .subscribe(
                         listAlbum -> view.showAlbums(listAlbum),
                         error -> view.showToastMessage(((BaseFragment) view).getContext().getString(R.string.error), Toast.LENGTH_SHORT));
@@ -181,6 +186,11 @@ public class AlbumPresenter implements AlbumContract.Presenter {
                     emitter.onComplete();
                 }
         )
+                .doOnSubscribe(__ -> {
+                    view.showAlbums(new ArrayList<>());
+                    view.showProgressCircle();
+                })
+                .doOnTerminate(() -> view.hideProgressCircle())
                 .compose(ApplyScheduler.applySchedulersCompletableComputation())
                 .subscribe(
                         () -> view.showAlbums(listCurrentAlbums),

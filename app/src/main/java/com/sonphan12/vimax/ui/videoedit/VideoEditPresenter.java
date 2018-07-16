@@ -80,7 +80,6 @@ public class VideoEditPresenter implements Presenter {
 
     @Override
     public void executeFfmpegCommand(String[] command, FFmpeg ffmpeg, File output, String progressMessage) {
-        view.showProgressDialog(progressMessage);
         Disposable d = Completable.create(emitter -> ffmpeg.execute(command, new FFmpegExecuteResponseHandler() {
             @Override
             public void onSuccess(String message) {
@@ -106,9 +105,10 @@ public class VideoEditPresenter implements Presenter {
             }
         }))
                 .compose(ApplyScheduler.applySchedulersCompletableComputation())
+                .doOnSubscribe(__ -> view.showProgressDialog(progressMessage))
+                .doOnTerminate(() -> view.cancelProgressDialog())
                 .subscribe(() -> {
                             view.showToastMessage(((VideoEditActivity) view).getString(R.string.finish), Toast.LENGTH_SHORT);
-                            view.cancelProgressDialog();
                             ((Activity) view).sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(newFile)));
                             // Show new video preview
                             ((VideoEditActivity) view).videoPath = newFile.getPath();
@@ -116,7 +116,6 @@ public class VideoEditPresenter implements Presenter {
                         },
                         error -> {
                             Log.d("ERROR_FFMPEG", error.toString());
-                            view.cancelProgressDialog();
                             view.showToastMessage(((VideoEditActivity) view).getString(R.string.executing_error), Toast.LENGTH_SHORT);
                         });
         compositeDisposable.add(d);
